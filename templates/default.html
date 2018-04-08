@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    <title>{% block title %} {% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Joti+One|Permanent+Marker|Patua+One|Berkshire+Swash" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+    {% endblock %}
+  </head>
+  <body>
+    <div>
+      <nav class="navbar navbar-inverse navbar-toggleable-md bg-inverse fixed-top">
+        <a class="navbar-brand" href="#">Catalog App</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button"
+                data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="navbar-text">&nbsp;</span>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a href="{{url_for('main')}}"
+                 class="nav-link text-white">
+                Home <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item"><a href="#" class="nav-link">Contact</a></li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0 mx-lg-2">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          <form action="#" class="form-inline my-2 my-lg-0">
+            <button class="btn btn-outline-primary">Login/Register</button>
+          </form>
+        </div>
+      </nav>
+    </div>
+    {% block header %}
+    {% endblock %}
+    <header>
+      <div class="row">
+        <div class="col-12 header-section">
+          <h1>Catalog App</h1>
+        </div>
+      </div>
+    </header>
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>

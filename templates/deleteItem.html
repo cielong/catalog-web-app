@@ -1,0 +1,18 @@
+{% extends "default.html" %}
+{% block title %} {{item.name}} {% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1>Delete Item</h1>
+      <form method="post">
+        <p>Are you sure you want to delete item {{item.name}}?</p>
+        <button type="submit" name="delete" value="delete"
+                class="btn btn-primary">Delete</button>
+        <button type="submit" name="cancel" value="cancel"
+                class="btn btn-primary">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

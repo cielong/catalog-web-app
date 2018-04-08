@@ -1,0 +1,23 @@
+{% extends "default.html" %}
+{% block title} {{category.name}} {% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <h2>Categories</h2>
+      {% for cata in categories %}
+        <p>{{cata.name}}</p>
+        </br>
+      {% endfor %}
+    </div>
+    <div class="col-8">
+      <a href="#">Add Item</a>
+      <h2>{{category.name}} Items ({{category.size}} items)</h2>
+      {% for item in items %}
+        <a href="#">{{item.name}}</a>
+	</br>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
