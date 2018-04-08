@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Database related config and data files
+data/*
+config.ini
+GeoNames.py
+
+# Emacs related cache file
+.~/
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# MACOS
+.DS_Store
+
+
+
