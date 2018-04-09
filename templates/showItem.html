@@ -1,12 +1,35 @@
 {% extends "default.html" %}
 {% block title %}{{item.name}}{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h2>{{item.name}}</h2>
-      <p>Description: {{item.description}}</p>
+<div class="container main">
+  <div class="row mb-2">
+    <div class="col-12 border-bottom">
+      <h2 >{{item.name}}</h2>
     </div>
   </div>
+  {% if item.imageURI %}
+  <div class="row mt-2">
+    <div class="col-sm-8">
+      <h5>Description:</h5>
+      <p>{{item.description}}</p>
+    </div>
+    <div class="col-sm-4 order-first order-md-last order-lg-last">
+      <figure class="figure text-center">
+        <img alt="{{ item.name }}"
+	     src="{{ url_for('static', filename=item.imageURI) }}"
+             class="img-thumbnail figure-img rounded" />
+        <figcaption class="figure-caption text-center">{{ item.name }}</figcaption>
+      </figure>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12">
+      <h5>Description:</h5>
+      <p>{{item.description}}</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
 </div>
 {% endblock %}

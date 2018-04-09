@@ -1,20 +1,20 @@
 {% extends "default.html" %}
 {% block title %} {{category.name}} {% endblock %}
 {% block content %}
-<div class="container">
+<div class="container main">
   <div class="row">
-    <div class="col-4">
+    <div class="col-sm-4 category">
       <h2>Categories</h2>
       {% for cata in categories %}
-        <p>{{cata.name}}</p>
-        </br>
+      <a href="{{ url_for('showCategory', category_name=cata.name) }}">{{cata.name}}</a>
+      </br>
       {% endfor %}
     </div>
-    <div class="col-8">
+    <div class="col-sm-8">
       <h2>{{category.name}} Items ({{category.size}} items)</h2>
-      {% for item in items %}
-        <p>{{item.name}}</p>
-        </br>
+      {% for item in category.items %}
+      <a href="{{ url_for('showItem', category_name=category.name, item_name=item.name) }}">{{item.name}}</a>
+      <br/>
       {% endfor %}
     </div>
   </div>
