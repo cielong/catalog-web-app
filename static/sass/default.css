@@ -1,0 +1,26 @@
+body {
+  padding-top: 60px; }
+
+p {
+  text-indent: 10%; }
+
+.main {
+  margin-top: 1em;
+  padding-top: 1em; }
+  .main h2 {
+    font-family: "Patua One";
+    background-image: url("../images/text_background.jpg");
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent; }
+  .main a:hover, .main a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #000; }
+  .main .category {
+    border-right: 1px solid #ccc; }
+  .main figcaption {
+    font-family: "Berkshire Swash";
+    text-align: center; }
+
+/*# sourceMappingURL=default.css.map */
