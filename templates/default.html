@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='sass/default.css') }}" rel="stylesheet"/>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Joti+One|Permanent+Marker|Patua+One|Berkshire+Swash" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Joti+One|Permanent+Marker|Patua+One|Berkshire+Swash|Rock+Salt" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -18,43 +18,83 @@
   <body>
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-	<a class="navbar-brand" href="{{　url_for('main') }}">Catalog App</a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse"
-		data-target="#navbarSupportedContent"
-		aria-controls="navbarSupportedContent"
-		aria-expanded="false" aria-label="Toggle navigation">
-	  <span class="navbar-toggler-icon"></span>
-	</button>
+        <a class="navbar-brand brand" href="{{　url_for('main') }}">Catalog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-	  <ul class="navbar-nav mr-auto">
-	    <li class="nav-item active">
-              <a class="nav-link" href="{{ url_for('main') }}">Home <span class="sr-only">(current)</span></a>
-	    </li>
-	    <li class="nav-item">
-              <a class="nav-link disabled" href="#">Contact</a>
-	    </li>
-	  </ul>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{{ url_for('main') }}">HOME <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#">CONTACT</a>
+            </li>
+          </ul>
           <form action="#" class="form-inline my-2 my-lg-0 d-lg-none">
             <button class="btn btn-outline-primary mr-2">Login</button>
-	    <button class="btn btn-outline-primary">Register</button>
+            <button class="btn btn-outline-primary">Register</button>
           </form>
-	  <form class="form-inline my-2 my-lg-0 mx-lg-2">
-	    <input class="form-control mr-sm-2" type="search"
-		   placeholder="Search" aria-label="Search">
-	    <button class="btn btn-outline-success my-2 my-sm-0"
-		    type="submit">Search</button>
-	  </form>
+          <form class="form-inline my-2 my-lg-0 mx-lg-2">
+            <input class="form-control mr-sm-2" type="search"
+                   placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0"
+                    type="submit">Search</button>
+          </form>
           </form>
           <form action="#" class="form-inline my-2 my-lg-0 d-none d-lg-block">
             <button class="btn btn-outline-primary">Login/Register</button>
           </form>
-	</div>
+        </div>
       </nav>
     </div>
-    {% block header %}
-    {% endblock %}
-    {% block content %}
-    {% endblock %}
+    <header>
+      {% block header %}
+      {% endblock %}
+    </header>
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+    <footer>
+      <div class="container-fluid border-top">
+        <div class="row my-3 align-items-end">
+          <div class="col-sm-6 text-center border-right">
+            <h2>
+              <a class="brand" href="{{ url_for('main') }}">Catalog</a>
+            </h2>
+            <p>A free space for sharing knowledge</p>
+          </div>
+          <div class="col-sm-6 text-center">
+            <h2>Contact</h2>
+            <div class="contact">
+              <i class="fas fa-phone fa-rotate-90"></i>
+              (123)-456-7890
+            </div>
+            <div class="contact">
+              <i class="far fa-envelope" aria-hidden="true"></i>
+              <a href="mailto:cielosplayground@gmail.com">cielospayground@gmail.com</a>
+            </div>
+          </div>
+        </div>
+        <div class="row border-top border-bottom my-2 justify-content-center">
+          <div class="col-2 text-center navigation">
+            <a class="nav-link" href="{{ url_for('main') }}">HOME <span class="sr-only">(current)</span></a>
+          </div>
+          <div class="col-2 text-center navigation">
+            <a class="nav-link" href="#">DEV GUIDE</a>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12 text-center pt-3">
+            <p>All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

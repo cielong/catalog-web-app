@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <div id="GoogleSigninButton">
+      <span class="g-signin"
+	    data-scope="openid email"
+	    data-clientid="1058681947724-hf7okld9are6bdkf88s9hc6g8hh7skur.apps.googleusercontent.com"
+	    data-redirecturi="postmessage"
+	    data-accesstype="offline"
+	    data-cookiepolicy="singel-host-origin"
+	    data-callback="signInCallback"
+	    data-approvalprompt="force">
+      </span>
+    </div>
+    <div id="FacebookSigninButtion"></div>
+    <div id="WechatSigninButtion"></div>
+    <div id="QQSigninButtion"></div>
+    <div id="SigninButtion"></div>
+    <div id="result"></div>
+    <script>
+     function signInCallback(authResult){
+       if (authResult['code']) {
+	 // Hide the sign-in Button
+	 $('#signinButton').attr('style', 'display: none');
+	 $.ajax({
+	   type: 'POST',
+	   url: '/gconnect?state={{STATE}}',
+	   processData: false,
+	   contentTyple: 'application/octet-stream; charset=utf-8',
+	   data: authResult['code'],
+	   success: function(result) {
+	     if (result) {
+	       $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
+	       setTimeOut(function() {
+		 window.location.href = '/restaurant';
+	       }, 4000);
+	     } else if (authResult['error']){
+	       console.log('There was an error: ' + authResult['error']);
+	     } else {
+	       $('#result').html('Failed to make a server side call. Check your configuration and console');
+	     }
+	   }
+	 });
+       }
+     }
+    </script>
+  </body>
+</html>
