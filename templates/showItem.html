@@ -1,22 +1,25 @@
 {% extends "default.html" %}
 {% block title %}{{item.name}}{% endblock %}
 {% block content %}
-<div class="container main">
+<div class="container">
   <div class="row mb-2">
     <div class="col-12 border-bottom">
       <h2 >{{item.name}}</h2>
+      <h6>Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}</h6>
     </div>
   </div>
   {% if item.imageURI %}
   <div class="row mt-2">
     <div class="col-sm-8">
       <h5>Description:</h5>
-      <p>{{item.description}}</p>
+      {% for p in item.description.split('\n\n') %}
+      <p>{{p}}</p>
+      {% endfor %}
     </div>
     <div class="col-sm-4 order-first order-md-last order-lg-last">
       <figure class="figure text-center">
         <img alt="{{ item.name }}"
-	     src="{{ url_for('static', filename=item.imageURI) }}"
+             src="{{ url_for('static', filename=item.imageURI) }}"
              class="img-thumbnail figure-img rounded" />
         <figcaption class="figure-caption text-center">{{ item.name }}</figcaption>
       </figure>
@@ -30,6 +33,22 @@
     </div>
   </div>
   {% endif %}
-</div>
+  {% if item.refers %}
+  <div class="row">
+    <div class="col-12">
+      <h5>References</h5>
+      <ol>
+      {% for r in item.refers %}
+	<li>
+	  <a class="references" href="{{r.rlink}}">
+	    {{r.rlink.split('/')[-1].replace('_', ' ')}}
+	  </a>
+	  <i class="fas fa-external-link-alt fa-xs"></i>
+	</li>
+	{% endfor %}
+      </ol>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

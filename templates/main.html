@@ -6,17 +6,18 @@
     <div class="col-sm-4 category">
       <h2>Categories</h2>
       {% for cata in categories %}
-      <a href="{{ url_for('showCategory', category_name=cata.name) }}">{{cata.name}}</a>
+      <a href="{{ url_for('showCategory', category_name=cata.name) }}">
+        {{cata.name}}
+      </a>
       <br/>
       {% endfor %}
     </div>
     <div class="col-sm-8">
       <h2>Latest Items</h2>
-      {% for cata in categories %}
-      {% for item in cata.items %}
-      <a href="{{ url_for('showItem', category_name=item.category.name, item_name=item.name) }}">{{item.name}}</a>
+      {% for item in items %}
+      <a href="{{ url_for('showItem', category_name=item.categories[0].name,
+	       item_name=item.name) }}">{{item.name}}</a>
       <br/>
-      {% endfor %}
       {% endfor %}
     </div>
   </div>

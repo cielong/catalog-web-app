@@ -43,9 +43,12 @@ def categoryJson(category_name):
                     status=200, mimetype='application/json')
 
 
-@app.route("/catalog/<item_name>.json")
-def itemJson(item_name):
-    item = session.query(Item).filter_by(name=item_name).one()
+@app.route("/catalog/<category_name>/<item_name>.json")
+def itemJson(category_name, item_name):
+    category = session.query(Category).filter_by(name=category_name).one()
+    item = session.query(Item)
+    item = item.filter(Item.categories.contains(category))
+    item = item.filter_by(name=item_name).one()
     return Response(response=json.dumps(item.serialize, indent=2,
                                         ensure_ascii=False,
                                         separators=(',', ': ')),
@@ -65,8 +68,9 @@ def showCategory(category_name):
 @app.route("/catalog/<category_name>/<item_name>")
 def showItem(category_name, item_name):
     category = session.query(Category).filter_by(name=category_name).one()
-    item = session.query(Item).filter_by(name=item_name,
-                                         category=category).one()
+    item = session.query(Item)
+    item = item.filter(Item.categories.contains(category))
+    item = item.filter_by(name=item_name).one()
     return render_template("showItem.html", item=item)
 
 
