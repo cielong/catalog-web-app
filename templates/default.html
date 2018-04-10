@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', filename='sass/default.css') }}" rel="stylesheet"/>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Joti+One|Permanent+Marker|Patua+One|Berkshire+Swash|Rock+Salt" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Patua+One|Berkshire+Swash|Rock+Salt|East+Sea+Dokdo" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -67,7 +67,7 @@
             <h2>
               <a class="brand" href="{{ url_for('main') }}">Catalog</a>
             </h2>
-            <p>A free space for sharing knowledge</p>
+            <p class="brand-text">A free space for sharing knowledge</p>
           </div>
           <div class="col-sm-6 text-center">
             <h2>Contact</h2>
@@ -82,10 +82,10 @@
           </div>
         </div>
         <div class="row border-top border-bottom my-2 justify-content-center">
-          <div class="col-2 text-center navigation">
+          <div class="col-6 col-lg-2 text-center navigation">
             <a class="nav-link" href="{{ url_for('main') }}">HOME <span class="sr-only">(current)</span></a>
           </div>
-          <div class="col-2 text-center navigation">
+          <div class="col-6 col-lg-2 text-center navigation">
             <a class="nav-link" href="#">DEV GUIDE</a>
           </div>
         </div>

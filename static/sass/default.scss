@@ -1,15 +1,16 @@
 // default settings
 html {
-    postion: relative;
+    position: relative;
     min-height: 100%;
 }
 
 body {
     padding-top: 60px;
+    padding-bottom: 360px;
     background-color: #e3e4e5;
 }
 
-p {
+p::first-line {
     text-indent: 10%;
 }
 
@@ -21,6 +22,17 @@ a, a:hover{
 // contents
 .brand {
     font-family: 'Rock Salt', cursive;
+}
+
+p.brand-text {
+    font-size: 16px;
+    font-family: 'East Sea Dokdo', cursive;
+    text-indent: 0;
+    text-decoration: overline;
+}
+
+a.references {
+    colot: #ff0 !important;
 }
 
 main {
@@ -69,20 +81,20 @@ footer {
         font-family: 'Noticia Text', serif;
         color: white;
 
-	a, a:hover {
-	    color: white;
-	}
+        a, a:hover {
+            color: white;
+        }
 
     }
 
     .contact, .navigation{
-	a {
+        a {
             color: #919192;
-	}
+        }
 
-	a:hover {
-	    color: white;
-	}
+        a:hover {
+            color: white;
+        }
     }
 
     p {
