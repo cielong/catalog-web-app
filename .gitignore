@@ -20,5 +20,5 @@ GeoNames.py
 # MACOS
 .DS_Store
 
-
-
+# sass
+static/sass/.sass-cache/*

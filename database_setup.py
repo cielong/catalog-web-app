@@ -26,6 +26,24 @@ DB_CONN_URI = DB_CONN_FORMAT.format(**DB_CONFIG_DICT)
 Base = declarative_base()
 
 
+class user_with_item(Base):
+    __tablename__ = "user_with_item"
+
+    uid = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    iid = Column(Integer, ForeignKey('items.id'), primary_key=True)
+    lastEditTime = Column(DateTime, server_default=func.now(),
+                          onupdate=func.now())
+    user = relationship('User', back_populates='items')
+    item = relationship('Item', back_populates='users')
+
+
+class category_with_item(Base):
+    __tablename__ = "category_with_item"
+
+    cid = Column(Integer, ForeignKey('categories.id'), primary_key=True)
+    iid = Column(Integer, ForeignKey('items.id'), primary_key=True)
+
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -33,7 +51,7 @@ class User(Base):
     email = Column(String, index=True, nullable=False, unique=True)
     username = Column(String, nullable=False)
     password = Column(String(512), nullable=False)
-    items = relationship('Item', order_by='Item.id',
+    items = relationship('user_with_item', order_by='user_with_item.iid',
                          cascade="all, delete, delete-orphan",
                          back_populates='user')
 
@@ -48,8 +66,8 @@ class Category(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, unique=True, nullable=False, index=True)
     items = relationship('Item', order_by='Item.id',
-                         cascade="all, delete, delete-orphan",
-                         back_populates='category')
+                         secondary=category_with_item.__table__,
+                         back_populates='categories')
 
     @property
     def serialize(self):
@@ -69,19 +87,41 @@ class Item(Base):
     imageURI = Column(String)
     lastEditTime = Column(DateTime, server_default=func.now(),
                           onupdate=func.now())
-    cid = Column(Integer, ForeignKey('categories.id'))
-    category = relationship(Category, back_populates='items')
-    uid = Column(Integer, ForeignKey('users.id'))
-    user = relationship(User, back_populates="items")
+    categories = relationship('Category', back_populates='items',
+                              secondary=category_with_item.__table__)
+    users = relationship('user_with_item',
+                         back_populates='item')
+    refers = relationship('References', back_populates='items')
 
     @property
     def serialize(self):
         """ Return object datatype that is easily serializable """
         return {
                 'item': self.name,
-                'description': ' '.join(self.description.split()),
-                'category': self.category.name,
-                'lastEditTime': self.lastEditTime
+                'description': self.description,
+                'references': [r.serialize for r in self.refers],
+                'category': [c.name for c in self.categories],
+                'lastEditTime': self.lastEditTime.strftime("%Y-%m-%d %H:%M"),
+                'lastEditedBy': self.findLastEditUser()
+        }
+
+    def findLastEditUser(self):
+        return max([(u.lastEditTime, u.user.username) for u in self.users])[1]
+
+
+class References(Base):
+    __tablename__ = 'references'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    iid = Column(Integer, ForeignKey('items.id'), primary_key=True)
+    rlink = Column(String)
+    items = relationship('Item', back_populates='refers')
+
+    @property
+    def serialize(self):
+        """ Return object that is easily serializable """
+        return {
+                'references': self.rlink
         }
 
 
