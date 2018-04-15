@@ -5,13 +5,14 @@
   <div class="row">
     <div class="col-12">
       <h1>Delete Item</h1>
-      <form method="post">
-        <p>Are you sure you want to delete item {{item.name}}?</p>
-        <button type="submit" name="delete" value="delete"
-                class="btn btn-primary">Delete</button>
-        <button type="submit" name="cancel" value="cancel"
-                class="btn btn-primary">Cancel</button>
-      </form>
+      <p>Are you sure you want to delete item {{item.name}}?</p>
+      <button type="submit" name="delete" value="delete"
+              class="btn btn-primary" formmethod="POST">Delete</button>
+      <button name="cancel" value="cancel"
+              class="btn btn-primary"
+              onClick="window.location='{{url_for('showItem',
+                      category_name=item.categories[0].name,
+                      item_name=item.name)}}'">Cancel</button>
     </div>
   </div>
 </div>

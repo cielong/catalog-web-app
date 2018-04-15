@@ -4,50 +4,91 @@
     <title>login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{url_for('static', filename='sass/signin.css' )}}" rel="stylesheet"/>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Patua+One|Berkshire+Swash|Rock+Salt|East+Sea+Dokdo" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"> </script>
   </head>
   <body>
-    <div id="GoogleSigninButton">
-      <span class="g-signin"
-	    data-scope="openid email"
-	    data-clientid="1058681947724-hf7okld9are6bdkf88s9hc6g8hh7skur.apps.googleusercontent.com"
-	    data-redirecturi="postmessage"
-	    data-accesstype="offline"
-	    data-cookiepolicy="singel-host-origin"
-	    data-callback="signInCallback"
-	    data-approvalprompt="force">
-      </span>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4 signin-col-first
+                    my-lg-5 signin-col rounded-left">
+          <h1 class="brand pt-4">Catalog</h1>
+          <form method="POST" class="form-signin py-3">
+            <h2>Please sign in</h2>
+            <label for="inputEmail" class="sr-only">Email Address</label>
+            <input type="email" id="inputEmail" class="form-control" name="email"
+                   placeholder="Email Address" required autofocus />
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control"
+		   name="password" placeholder="Password" required />
+            <button class="btn btn-lg btn-primary btn-block mb-2" id="SigninButtion"
+		    type="submit">
+              Sign in
+            </button>
+            <div class="row no-gutters">
+              <div class="col pr-1">
+                <button class="btn btn-secondary btn-block"
+                        onClick="window.location='/signup'">
+                  Sign Up
+                </button>
+              </div>
+              <div class="col pl-1">
+                <button class="btn btn-danger btn-block">Forget Password?</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 col-md-4 col-lg-2 my-lg-5 py-5 signin-col rounded-right">
+          <div id="GoogleSigninButton">
+            <span class="g-signin"
+                  data-scope="openid email"
+                  data-clientid="623321830837-r7rfk638vn6qisoqcmmbjbo4rs8ipe7d.apps.googleusercontent.com"
+                  data-redirecturi="postmessage"
+                  data-accesstype="offline"
+                  data-cookiepolicy="singel-host-origin"
+                  data-callback="signInCallback"
+                  data-approvalprompt="force">
+            </span>
+          </div>
+          <div id="FacebookSigninButtion"></div>
+          <div id="WechatSigninButtion"></div>
+          <div id="QQSigninButtion"></div>
+        </div>
+      </div>
+      <div id="result"></div>
     </div>
-    <div id="FacebookSigninButtion"></div>
-    <div id="WechatSigninButtion"></div>
-    <div id="QQSigninButtion"></div>
-    <div id="SigninButtion"></div>
-    <div id="result"></div>
     <script>
-     function signInCallback(authResult){
+     function signInCallback(authResult) {
        if (authResult['code']) {
-	 // Hide the sign-in Button
-	 $('#signinButton').attr('style', 'display: none');
-	 $.ajax({
-	   type: 'POST',
-	   url: '/gconnect?state={{STATE}}',
-	   processData: false,
-	   contentTyple: 'application/octet-stream; charset=utf-8',
-	   data: authResult['code'],
-	   success: function(result) {
-	     if (result) {
-	       $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
-	       setTimeOut(function() {
-		 window.location.href = '/restaurant';
-	       }, 4000);
-	     } else if (authResult['error']){
-	       console.log('There was an error: ' + authResult['error']);
-	     } else {
-	       $('#result').html('Failed to make a server side call. Check your configuration and console');
-	     }
-	   }
-	 });
-       }
-     }
+         $('#GoogleSigninButton').attr('style', 'display: none');
+         $.ajax({
+           type: 'POST',
+           url: '/gconnect?state={{STATE}}',
+           processData: false,
+           data: authResult['code'],
+           contentType: 'application/octet-stream; charset=utf-8',
+           success: function(result) {
+             if (result) {
+               $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+               setTimeout(function() {
+                 window.location.href = "/catalog";
+               }, 4000);
+
+             } else if (authResult['error']) {
+               console.log('There was an error: ' + authResult['error']);
+             } else {
+               $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+             }
+           }
+
+         }); } }
     </script>
   </body>
 </html>

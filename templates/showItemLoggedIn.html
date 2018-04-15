@@ -1,14 +1,64 @@
 {% extends "default.html" %}
 {% block title %}{{item.name}}{% endblock %}
 {% block content %}
-<div class="container main">
-  <div class="row">
-    <div class="col-12">
-      <h2>{{item.name}}</h2>
-      <h5>Description:</h5>
-      <p>{{item.description}}</p>
-      <p> <a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a> </p>
+<div class="container">
+  <div class="row mb-2">
+    <div class="col-12 border-bottom">
+      <h2 >{{item.name}}</h2>
+      <h6>Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}</h6>
     </div>
   </div>
+  {% if item.imageURI %}
+  <div class="row mt-2">
+    <div class="col-sm-8">
+      <h5>
+	Description:
+	<small>
+	  [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
+	</small>
+      </h5>
+      {% for p in item.description.split('\n\n') %}
+      <p>{{p}}</p>
+      {% endfor %}
+    </div>
+    <div class="col-sm-4 order-first order-md-last order-lg-last">
+      <figure class="figure text-center">
+        <img alt="{{ item.name }}"
+             src="{{ url_for('static', filename=item.imageURI) }}"
+             class="img-thumbnail figure-img rounded" />
+        <figcaption class="figure-caption text-center">{{ item.name }}</figcaption>
+      </figure>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12">
+      <h5>
+	Description:
+	<small>
+	  [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
+	</small>
+      </h5>
+      <p>{{item.description}}</p>
+    </div>
+  </div>
+  {% endif %}
+  {% if item.refers %}
+  <div class="row">
+    <div class="col-12">
+      <h5>References</h5>
+      <ol>
+	{% for r in item.refers %}
+	<li>
+	  <a class="references" href="{{r.rlink}}">
+	    {{r.rlink.split('/')[-1].replace('_', ' ')}}
+	  </a>
+	  <i class="fas fa-external-link-alt fa-xs"></i>
+	</li>
+	{% endfor %}
+      </ol>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

@@ -6,30 +6,53 @@
     <div class="col-12">
       <h1>Edit Item</h1>
       <form method="post">
-	<div class="form-group">
-	  <label for="InputTitle">Title</label>
-	  <input type="text" class="form-control"
-		 id="InputTitle" placeholder="{{item.name}}"/>
-	</div>
-	<div class="form-group">
-	  <label for="InputDescription">Description</label>
-	  <input type="text" class="form-control"
-	         id="InputDescription" placeholder="description"/>
-	</div>
-	<div class="form-group">
-	  <label for="SelectCategory">Category</label>
-	  <select class="form-control" id="SelectCategory">
-	    {% for category in categories %}
-	      <option>{{category.name}}</option>
-	    {% endfor %}
-	  </select>
-	</div>
-	<button type="submit" name="edit" value="edit"
-		class="btn btn-primary">Submit</button>
-	<button type="submit" name="cancel" value="cancel"
-                class="btn btn-primary">Cancel</button>
+        <div class="form-group">
+          <label for="InputTitle">Name</label>
+          <input type="text" class="form-control"
+                 id="InputTitle" placeholder="{{item.name}}"
+		 name="Name" value="{{item.name}}" />
+        </div>
+        <div class="form-group">
+          <label for="InputDescription">Description</label>
+          <textarea class="form-control" id="InputDescription"
+                    rows="5" placeholder="Decription"
+		    name="Description" data-autoresize >
+            {{item.description}}
+	  </textarea>
+        </div>
+	{% for c in categories %}
+        <div class="form-group">
+          <label for="InputCategory">Category</label>
+          <input name="Category[]" type="text" placeholder="Animation"
+                 id="InputCategory" list="categories" value="{{c.name}}"
+                 class="form-control"/>
+          <datalist id="categories">
+            {% for category in categories %}
+            <option value="{{category.name}}"/>
+            {% endfor %}
+          </datalist>
+	  <button class="btn btn-sm btn-light clone mt-1"
+		  name="clone" value="Add">Add More Category</button>
+          <button class="btn btn-sm btn-light remove mt-1"
+		  name="remove" value="Remove">Remove</button>
+        </div>
+	{% endfor %}
+        <button type="submit" name="edit" value="edit"
+                class="btn btn-primary">Submit</button>
+        <button type="button" name="cancel" value="cancel"
+                class="btn btn-primary" formmethod="GET"
+                onClick="window.location='{{url_for('showItem',
+                      category_name=item.categories[0].name,
+                      item_name=item.name)}}'">Cancel</button>
       </form>
     </div>
   </div>
 </div>
+<script>jQuery.each(jQuery('textarea[data-autoresize]'), function() {
+   var offset = this.offsetHeight - this.clientHeight;
+   var resizeTextarea = function(el) {
+     jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset);
+   };
+   jQuery(this).on('keyup input', function() { resizeTextarea(this); }).removeAttr('data-autoresize');
+ });</script>
 {% endblock %}
