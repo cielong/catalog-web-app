@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
+from passlib.apps import custom_app_context as pwd_context
 
 
 DB_CONFIG_DICT = {
@@ -50,14 +51,17 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, index=True, nullable=False, unique=True)
     username = Column(String, nullable=False)
-    password = Column(String(512), nullable=False)
+    password = Column(String(128))
+    photo = Column(String)
     items = relationship('user_with_item', order_by='user_with_item.iid',
                          cascade="all, delete, delete-orphan",
                          back_populates='user')
 
-    @staticmethod
-    def validate_password(self):
-        pass
+    def hash_password(self, password):
+        self.password = pwd_context.encrypt(password)
+
+    def validate_password(self, password):
+        return pwd_context.verify(password, self.password)
 
 
 class Category(Base):

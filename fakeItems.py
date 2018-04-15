@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import (
     Base, Item, Category, User, References,
-    user_with_item, category_with_item, DB_CONN_URI
+    user_with_item, DB_CONN_URI
 )
 
 
@@ -19,8 +19,8 @@ session = DBSession()
 
 # Add User Cielo
 user = User(email='cielosplayground@gmail.com',
-            username='cielo',
-            password='password')
+            username='cielo')
+user.hash_password('password')
 
 session.add(user)
 session.commit()
