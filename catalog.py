@@ -6,6 +6,7 @@ from flask import (
     Flask, render_template, json, Response, request, redirect,
     url_for
 )
+from flaskrun import flaskrun
 
 # Form formats
 from forms import ItemInfoForm
@@ -379,4 +380,5 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    app.run()
+    # app.run("0.0.0.0", 5000)
+    flaskrun(app)
