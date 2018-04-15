@@ -31,8 +31,8 @@ from flask import make_response, flash
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-with open('client_secrets.json', 'r') as f:
-    CLIENT_ID = json.load(f)['web']['client_id']
+# with open('client_secrets.json', 'r') as f:
+#     CLIENT_ID = json.load(f)['web']['client_id']
 
 # Flask app
 app = Flask(__name__)
@@ -379,4 +379,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    app.run("0.0.0.0", 5000)
+    app.run()

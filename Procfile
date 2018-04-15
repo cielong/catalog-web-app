@@ -1,1 +1,1 @@
-web: python catalog.py
+web: python catalog.py --host 0.0.0.0 --port ${PORT}
