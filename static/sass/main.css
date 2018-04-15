@@ -1,0 +1,81 @@
+html {
+  position: relative;
+  min-height: 100%; }
+
+body {
+  padding-top: 60px;
+  padding-bottom: 360px;
+  background-color: #e3e4e5; }
+
+p::first-line {
+  text-indent: 10%; }
+
+a, a:hover {
+  pointer: cursor !important;
+  text-decoration: none !important; }
+
+.dropdown-toggle::after {
+  display: none !important; }
+
+.dropdown-menu-right {
+  right: 0 !important;
+  left: auto !important; }
+
+.brand {
+  font-family: 'Rock Salt', cursive; }
+
+.user-image-small {
+  width: 36px;
+  height: 36px; }
+
+p.brand-text {
+  font-size: 16px;
+  font-family: 'East Sea Dokdo', cursive;
+  text-indent: 0;
+  text-decoration: overline; }
+
+a.references {
+  colot: #ff0 !important; }
+
+main {
+  margin-top: 1em;
+  padding-top: 1em; }
+  main h2 {
+    font-family: "Patua One";
+    background-image: url("../images/text_background.jpg");
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent; }
+  main a:hover, main a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #000; }
+  main .category {
+    border-right: 1px solid #ccc; }
+  main figcaption {
+    font-family: "Berkshire Swash";
+    text-align: center; }
+
+footer {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  color: #919192;
+  background-color: #2f2f30;
+  background-clip: text;
+  -webkit-background-clip: content-box; }
+  footer h2 {
+    font-family: 'Noticia Text', serif;
+    color: white; }
+    footer h2 a, footer h2 a:hover {
+      color: white; }
+  footer .contact a, footer .navigation a {
+    color: #919192; }
+  footer .contact a:hover, footer .navigation a:hover {
+    color: white; }
+  footer p {
+    font-size: 14px;
+    text-indent: 0 !important; }
+
+/*# sourceMappingURL=main.css.map */

@@ -1,0 +1,53 @@
+html {
+  position: relative;
+  min-height: 100%; }
+
+body {
+  padding-top: 60px;
+  padding-bottom: 360px;
+  background-color: #e3e4e5; }
+
+p::first-line {
+  text-indent: 10%; }
+
+a, a:hover {
+  pointer: cursor !important;
+  text-decoration: none !important; }
+
+.brand {
+  font-family: 'Rock Salt', cursive; }
+
+.signin-col {
+  background-color: #eee;
+  box-shadow: 2px 4px 8px 0 rgba(0, 0, 0, 0.2); }
+
+@media only screen and (max-width: 768px) {
+  .signin-col-first {
+    border-bottom: 1px solid #000; } }
+@media only screen and (min-width: 768px) {
+  .signin-col-first {
+    border-right: 1px solid #000; } }
+.form-signin {
+  max-width: 330px;
+  margin: 0 auto; }
+  .form-signin .form-signin-heading {
+    margin-bottom: 10px; }
+  .form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px; }
+  .form-signin .form-control:focus {
+    z-index: 2; }
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0; }
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0; }
+
+/*# sourceMappingURL=signin.css.map */

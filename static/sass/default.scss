@@ -19,86 +19,11 @@ a, a:hover{
     text-decoration: none !important;
 }
 
-// contents
-.brand {
-    font-family: 'Rock Salt', cursive;
+.dropdown-toggle::after {
+    display: none !important;
 }
 
-p.brand-text {
-    font-size: 16px;
-    font-family: 'East Sea Dokdo', cursive;
-    text-indent: 0;
-    text-decoration: overline;
-}
-
-a.references {
-    colot: #ff0 !important;
-}
-
-main {
-    margin-top: 1em;
-    padding-top: 1em;
-
-    h2 {
-        font-family: "Patua One";
-        background-image: url('../images/text_background.jpg');
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
-    }
-
-    a:hover, a {
-        cursor: pointer;
-        text-decoration: none;
-        color: #000;
-    }
-
-    .category {
-        border-right: 1px solid #ccc;
-    }
-
-    figcaption {
-        font-family: "Berkshire Swash";
-        text-align: center;
-    }
-}
-
-// footer
-footer {
-    // sticky footer
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: absolute;
-
-    // color
-    color: #919192;
-    background-color: #2f2f30;
-    background-clip: text;
-    -webkit-background-clip: content-box;
-
-    h2 {
-        font-family: 'Noticia Text', serif;
-        color: white;
-
-        a, a:hover {
-            color: white;
-        }
-
-    }
-
-    .contact, .navigation{
-        a {
-            color: #919192;
-        }
-
-        a:hover {
-            color: white;
-        }
-    }
-
-    p {
-        font-size: 14px;
-        text-indent: 0 !important;
-    }
+.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
 }
