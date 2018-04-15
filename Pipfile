@@ -8,6 +8,18 @@ name = "pypi"
 [packages]
 
 sqlalchemy = "*"
+"psycopg2" = "*"
+"psycopg2-binary" = "*"
+"oauth2client" = "*"
+flask = "*"
+"jinja2" = "*"
+wtforms = "*"
+requests = "*"
+"httplib2" = "*"
+passlib = "*"
+itsdangerous = "*"
+sqlalchemy-utils = "*"
+configparser = "*"
 
 
 [dev-packages]
