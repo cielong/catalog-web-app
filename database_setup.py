@@ -129,8 +129,8 @@ class References(Base):
                 'references': self.rlink
         }
 
-
-engine = create_engine(DB_CONN_URI, echo=False)
-if not database_exists(engine.url):
-    create_database(engine.url)
-Base.metadata.create_all(engine)
+if __name__ == "__main__":
+    engine = create_engine(DB_CONN_URI, echo=False)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+    Base.metadata.create_all(engine)
