@@ -96,7 +96,7 @@ class Item(Base):
                               secondary=category_with_item.__table__)
     users = relationship('user_with_item',
                          back_populates='item')
-    refers = relationship('References', back_populates='items')
+    refers = relationship('Reference', back_populates='items')
 
     @property
     def serialize(self):
@@ -114,20 +114,22 @@ class Item(Base):
         return max([(u.lastEditTime, u.user.username) for u in self.users])[1]
 
 
-class References(Base):
+class Reference(Base):
     __tablename__ = 'references'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     iid = Column(Integer, ForeignKey('items.id'), primary_key=True)
     rlink = Column(String)
+    rtext = Column(String)
     items = relationship('Item', back_populates='refers')
 
     @property
     def serialize(self):
         """ Return object that is easily serializable """
         return {
-                'references': self.rlink
+                'references': self.rtext + '[' + self.rlink + ']'
         }
+
 
 if __name__ == "__main__":
     engine = create_engine(DB_CONN_URI, echo=False)

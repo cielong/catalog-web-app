@@ -6,7 +6,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import (
-    Base, Item, Category, User, References,
+    Base, Item, Category, User, Reference,
     user_with_item, DB_CONN_URI
 )
 
@@ -33,7 +33,8 @@ session.add(anime)
 session.commit()
 
 uwi1 = user_with_item()
-refer1 = References(rlink="https://en.wikipedia.org/wiki/Your_Name")
+refer1 = Reference(rtext="Your Name - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/Your_Name")
 anime1 = Item(name='君の名は(Your Name)',
               description=dedent("""\
               High school girl Mitsuha lives in the town of Itomori in Japan's
@@ -112,8 +113,9 @@ anime.items.append(anime1)
 session.commit()
 
 uwi2 = user_with_item()
-refer2 = References(rlink="https://en.wikipedia.org/wiki/Anohana"
-                    ":_The_Flower_We_Saw_That_Day")
+refer2 = Reference(rtext="AnoHana - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/Anohana"
+                   ":_The_Flower_We_Saw_That_Day")
 anime2 = Item(name='あの日見た花の名前を僕達はまだ知らない(AnoHana)',
               description="It is revealed that all of the group members "
               "blame themselves for Menma's death and long-hidden feelings "
@@ -129,7 +131,8 @@ anime.items.append(anime2)
 session.commit()
 
 uwi3 = user_with_item()
-refer3 = References(rlink="https://en.wikipedia.org/wiki/Your_Lie_in_April")
+refer3 = Reference(rtext="Your Lie in April - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/Your_Lie_in_April")
 anime3 = Item(name="四月は君の嘘(Your Lie in April)",
               description="Much to everyone's sadness, Kaori dies due to the "
               "surgery, but leaves a letter to Kōsei which is given to him by "
@@ -149,7 +152,8 @@ anime.items.append(anime3)
 session.commit()
 
 uwi4 = user_with_item()
-refer4 = References(rlink="https://en.wikipedia.org/wiki/Hanasaku_Iroha")
+refer4 = Reference(rtext="Hanasaku Iroha - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/Hanasaku_Iroha")
 anime4 = Item(name="花咲くいろは(The Blooming Colors)",
               description="Initially feeling discouraged, she decides to use "
               "her circumstances as an opportunity to change herself for the "
@@ -165,8 +169,9 @@ anime.items.append(anime4)
 session.commit()
 
 uwi5 = user_with_item()
-refer5 = References(rlink="https://en.wikipedia.org/wiki/"
-                    "A_Certain_Scientific_Railgun")
+refer5 = Reference(rtext="A Certain Scientific Railgun - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/"
+                   "A_Certain_Scientific_Railgun")
 anime5 = Item(name="とある科学の超電磁砲 レールガン(A Certain Scientific Railgun)",
               description="In the futuristic Academy City, which is made up "
               "of 80% students, many of whom are espers possessing unique "
@@ -185,7 +190,8 @@ anime.items.append(anime5)
 session.commit()
 
 uwi6 = user_with_item()
-refer6 = References(rlink="https://en.wikipedia.org/wiki/Hyouka")
+refer6 = Reference(rtext="Hyouka - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/Hyouka")
 anime6 = Item(name="氷菓(Hyouka)",
               description="At the request of his older sister, student Hotaro "
               "Oreki joins Kamiyama High School's Classic Literature Club to "
@@ -212,7 +218,8 @@ detective.items.append(anime6)
 session.commit()
 
 uwi7 = user_with_item()
-refer7 = References(rlink="https://en.wikipedia.org/wiki/The_A.B.C._Murders")
+refer7 = Reference(rtext="The A.B.C. Murders - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/The_A.B.C._Murders")
 detective1 = Item(name="The A.B.C. Murders",
                   description="Returning from South America, Arthur Hastings "
                   "meets with his old friend Hercule Poirot, at his new flat "
@@ -237,8 +244,9 @@ detective.items.append(detective1)
 session.commit()
 
 uwi8 = user_with_item()
-refer8 = References(rlink="https://en.wikipedia.org/wiki/"
-                    "Nemesis_(Christie_novel)")
+refer8 = Reference(rtext="Nemesis (Agatha Christie) - Wikipedia",
+                   rlink="https://en.wikipedia.org/wiki/"
+                   "Nemesis_(Christie_novel)")
 detective2 = Item(name="Nemesis",
                   description=dedent("""
                   Miss Marple receives a post card from the

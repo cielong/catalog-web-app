@@ -1,10 +1,20 @@
+import os
+from flask import session
 from wtforms import (
     Form, BooleanField, StringField, PasswordField, validators,
-    TextAreaField, FieldList
+    TextAreaField, FieldList, FormField
 )
 
 
 class RegistrationForm(Form):
+    class Meta:
+        csrf = True
+        csrf_secret = os.urandom(16)
+
+        @property
+        def csrf_context(self):
+            return session
+
     username = StringField('Username', [validators.Length(min=4, max=25)])
     email = StringField('Email Address', [validators.DataRequired(),
                                           validators.Email()])
@@ -16,8 +26,24 @@ class RegistrationForm(Form):
     accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
 
 
+class ReferenceForm(Form):
+    Text = StringField('Reference Title')
+    Link = StringField('Reference Link')
+
+
 class ItemInfoForm(Form):
-    name = StringField('Name')
-    description = TextAreaField('Description')
-    categories = FieldList(StringField('Category'))
-    reference = FieldList(StringField('Reference'), [validators.Optional])
+    class Meta:
+        csrf = True
+        csrf_secret = os.urandom(16)
+
+        @property
+        def csrf_context(self):
+            return session
+
+    name = StringField('Name', [validators.DataRequired()])
+    description = TextAreaField('Description', [validators.DataRequired()])
+    categories = FieldList(StringField('Category',
+                                       [validators.DataRequired()]),
+                           min_entries=1)
+    references = FieldList(FormField(ReferenceForm), [validators.Optional()],
+                           min_entries=1)
