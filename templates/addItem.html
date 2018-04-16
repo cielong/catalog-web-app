@@ -6,38 +6,68 @@
     <div class="col-12">
       <h1>New Item</h1>
       <form method="post">
-	<div class="form-group">
-	  <label for="InputTitle">Title</label>
-	  <input type="text" class="form-control"
-		 id="InputTitle" placeholder="title"
-		 name="Name" required />
-	</div>
-	<div class="form-group">
-	  <label for="InputDescription">Description</label>
-	  <textarea class="form-control" id="InputDescription"
-		    rows="5" placeholder="Decription"
-		    name="Description" required ></textarea>
-	</div>
-	<div class="form-group">
-	  <label for="InputCategory">Category</label>
-	  <input name="" type="text" placeholder="Animation"
-		 id="InputCategory" list="categories"
-		 class="form-control"
-		 name="Category[]" required />
-	  <datalist id="categories">
-	    {% for category in categories %}
-	    <option value="{{category.name}}"/>
-	    {% endfor %}
-	  </datalist>
-	</div>
-	<button type="submit" name="add" value="add"
+        <div class="form-group">
+          {{ form.name.label }}
+          {{ form.name(class_='form-control', placeholder='name',
+	  required=True) }}
+        </div>
+        <div class="form-group">
+	  {{ form.description.label }}
+          {{ form.description(class_='form-control', id='InputDescription',
+          autoresize=True, rows=5, placeholder='description',required=True) }}
+        </div>
+        {% for c in form.categories %}
+        <div class="form-group">
+	  {{c.label}}
+          {{c(class_='form-control', id='InputCategory',
+	  placeholder='input or select', **{'list': 'categories'})}}
+          <datalist id="categories">
+            {% for category in categories %}
+            <option value="{{category.name}}"/>
+            {% endfor %}
+          </datalist>
+          <button class="btn btn-sm btn-light clone mt-1"
+                  name="clone" value="Add">Add More</button>
+          <button class="btn btn-sm btn-light remove mt-1"
+                  name="remove" value="Remove">Remove</button>
+        </div>
+        {% endfor %}
+        {% for r in form.references %}
+        <div class="form-group">
+	  <label for="InputReference">Reference</label>
+          <div class="input-group no-gutters" id="Reference">
+	      <div class="col-3 ">
+		{{r.Text(class_='form-control', placeholder='title')}}
+	      </div>
+	      <div class="col-9">
+		{{r.Link(class_='form-control', placeholder='link')}}
+	      </div>
+          </div>
+          <button class="btn btn-sm btn-light clone mt-1"
+                  name="clone" value="Add">Add More</button>
+          <button class="btn btn-sm btn-light remove mt-1"
+                  name="remove" value="Remove">Remove</button>
+        </div>
+        {% endfor %}
+        <button type="submit" name="edit" value="edit"
                 class="btn btn-primary">Submit</button>
-	<button type="button" name="cancel" value="cancel"
-		formmethod="GET"
-		onClick="window.locaton='{{url_for('main', user=user)}}'"
-                class="btn btn-primary">Cancel</button>
+        <button type="button" name="cancel" value="cancel"
+                class="btn btn-primary" formmethod="GET"
+                onClick="window.location='{{url_for('showCategory',
+                         category_name=category.name )}}'">Cancel</button>
       </form>
     </div>
   </div>
 </div>
+<script>
+ jQuery.each(jQuery('textarea[autoresize]'), function() {
+   var offset = this.offsetHeight - this.clientHeight;
+   var resizeTextarea = function(el) {
+     jQuery(el).css('height', '100%').css('height', el.scrollHeight + offset);
+   };
+   resizeTextarea(this);
+   jQuery(this).on('change paste cut input', function() {
+     resizeTextarea(this); }).removeAttr('autoresize');
+ });
+</script>
 {% endblock %}

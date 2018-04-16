@@ -4,39 +4,57 @@
 <div class="container main">
   <div class="row">
     <div class="col-12">
-      <h1>Edit Item</h1>
+      <h1>Edit Item: {{item.name}}</h1>
       <form method="post">
+	{{ form.csrf_token }}
+	{% if form.csrf_token.errors %}
+	<div class="warning">You have submitted an invalid CSRF token</div>
+	{% endif %}
         <div class="form-group">
-          <label for="InputTitle">Name</label>
-          <input type="text" class="form-control"
-                 id="InputTitle" placeholder="{{item.name}}"
-		 name="Name" value="{{item.name}}" />
+          {{ form.name.label }}
+          {{ form.name(class_='form-control', value=item.name,
+	  placeholder='name') }}
         </div>
         <div class="form-group">
-          <label for="InputDescription">Description</label>
-          <textarea class="form-control" id="InputDescription"
-                    rows="5" placeholder="Decription"
-		    name="Description" data-autoresize >
-            {{item.description}}
-	  </textarea>
+	  {{ form.description.label }}
+          {{ form.description(class_='form-control', id='InputDescription',
+          autoresize=True, rows=5, placeholder='description') }}
         </div>
-	{% for c in categories %}
+        {% for c in form.categories %}
         <div class="form-group">
-          <label for="InputCategory">Category</label>
-          <input name="Category[]" type="text" placeholder="Animation"
-                 id="InputCategory" list="categories" value="{{c.name}}"
-                 class="form-control"/>
+	  {{ form.categories.label }}
+          {{ c(class_='form-control', value=c.data.name,
+	  placeholder='input or select', **{'list': 'categories'}) }}
           <datalist id="categories">
             {% for category in categories %}
             <option value="{{category.name}}"/>
             {% endfor %}
           </datalist>
-	  <button class="btn btn-sm btn-light clone mt-1"
-		  name="clone" value="Add">Add More Category</button>
+          <button class="btn btn-sm btn-light clone mt-1"
+                  name="clone" value="Add">Add More</button>
           <button class="btn btn-sm btn-light remove mt-1"
-		  name="remove" value="Remove">Remove</button>
+                  name="remove" value="Remove">Remove</button>
         </div>
-	{% endfor %}
+        {% endfor %}
+        {% for r in form.references %}
+	<div class="form-group">
+	  <label for="InputReference">Reference</label>
+	  <div class="input-group no-gutters" id="InputReference">
+	    <div class="col-3">
+	      {{r.Text(class='form-control', value=r.form.Text.data,
+	      placeholder='title')}}
+	    </div>
+	    <div class="col-9">
+	      {{r.Link(class_='form-control', value=r.form.Link.data,
+	      placeholder='link')}}
+	    </div>
+	  </div>
+          <button class="btn btn-sm btn-light clone mt-1"
+                  name="clone" value="Add">Add More</button>
+          <button class="btn btn-sm btn-light remove mt-1"
+                  name="remove" value="Remove">Remove</button>
+	</div>
+        {% endfor %}
         <button type="submit" name="edit" value="edit"
                 class="btn btn-primary">Submit</button>
         <button type="button" name="cancel" value="cancel"
@@ -48,11 +66,15 @@
     </div>
   </div>
 </div>
-<script>jQuery.each(jQuery('textarea[data-autoresize]'), function() {
+<script>
+ jQuery.each(jQuery('textarea[autoresize]'), function() {
    var offset = this.offsetHeight - this.clientHeight;
    var resizeTextarea = function(el) {
-     jQuery(el).css('height', 'auto').css('height', el.scrollHeight + offset);
+     jQuery(el).css('height', '100%').css('height', el.scrollHeight + offset);
    };
-   jQuery(this).on('keyup input', function() { resizeTextarea(this); }).removeAttr('data-autoresize');
- });</script>
+   resizeTextarea(this);
+   jQuery(this).on('change paste cut input', function() {
+     resizeTextarea(this); }).removeAttr('autoresize');
+ });
+</script>
 {% endblock %}

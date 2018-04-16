@@ -4,15 +4,17 @@
 <div class="container main">
   <div class="row">
     <div class="col-12">
-      <h1>Delete Item</h1>
+      <h1>Delete Item: {{item.name}}</h1>
+      <form method="POST">
       <p>Are you sure you want to delete item {{item.name}}?</p>
-      <button type="submit" name="delete" value="delete"
-              class="btn btn-primary" formmethod="POST">Delete</button>
-      <button name="cancel" value="cancel"
-              class="btn btn-primary"
+      <button name="delete" value="delete" type="submit"
+              class="btn btn-primary">Delete</button>
+      <button name="cancel" value="cancel" type="button"
+              class="btn btn-primary" formmethod="GET"
               onClick="window.location='{{url_for('showItem',
                       category_name=item.categories[0].name,
                       item_name=item.name)}}'">Cancel</button>
+      </form>
     </div>
   </div>
 </div>

@@ -9,14 +9,14 @@ from flask import (
 from flaskrun import flaskrun
 
 # Form formats
-from forms import ItemInfoForm
+from forms import ItemInfoForm, ReferenceForm
 
 # datebase connection
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import (
-    Base, Item, Category, User, References,
+    Base, Item, Category, User, Reference,
     user_with_item, DB_CONN_URI
 )
 
@@ -32,8 +32,8 @@ from flask import make_response, flash
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-# with open('client_secrets.json', 'r') as f:
-#     CLIENT_ID = json.load(f)['web']['client_id']
+with open('client_secrets.json', 'r') as f:
+    CLIENT_ID = json.load(f)['web']['client_id']
 
 # Flask app
 app = Flask(__name__)
@@ -46,7 +46,7 @@ session = DBSession()
 
 
 @app.route("/")
-@app.route("/catalog")
+@app.route("/catalog/")
 def main():
     categories = session.query(Category).all()
     items = session.query(Item).order_by(Item.lastEditTime.desc())
@@ -130,29 +130,43 @@ def addItem(category_name=None):
         return make_response(json.dumps("Email Address doesn't exists!"
                                         " Please sign in with another"
                                         " email address"), 401)
-    if request.method == 'POST':
-        categories = session.query(Category)
-        categories = categories.filter_by(name=request.form['Category']).all()
+    form = ItemInfoForm(request.form)
+    if request.method == 'POST' and form.validate():
+        item = Item(name=form.name.data, description=form.description.data)
+        # Add reference
+        for reference in form.references:
+            reference = Reference(rtext=reference.form.Text.data,
+                                  rlink=reference.form.Link.data)
+            reference.item = item
+            item.refers.append(reference)
+            session.add(reference)
+        # Add category
+        for category in form.categories:
+            try:
+                c = session.query(Category).filter_by(name=category.data).one()
+            except NoResultFound:
+                c = Category(name=category.data)
+                session.add(c)
+            c.items.append(item)
+        # Add user
         uwi = user_with_item()
-        if request.form.get('references'):
-            refer = [References(rlink=r) for r in request.form['references']]
-        else:
-            refer = None
-        newItem = Item(name=request.form['name'],
-                       description=request.form['description'],
-                       refers=refer)
-        uwi.item = newItem
+        uwi.item = item
+        uwi.user = user
         user.items.append(uwi)
-        for c in categories:
-            c.items.append(newItem)
         session.commit()
         return redirect(url_for('showItem',
-                                category_name=categories[0].name,
-                                item_name=newItem.name))
+                                category_name=item.categories[0].name,
+                                item_name=item.name))
     else:
-        category = session.query(Category).all()
-        return render_template("addItem.html",
-                               categories=category, user=user)
+        categories = session.query(Category).all()
+        if category_name:
+            category = session.query(Category).\
+                filter_by(name=category_name).one()
+        else:
+            category = None
+        return render_template("addItem.html", form=form,
+                               category=category, categories=categories,
+                               user=user)
 
 
 @app.route("/catalog/<item_name>/edit", methods=['GET', 'POST'])
@@ -164,29 +178,64 @@ def editItem(item_name):
         return make_response(json.dumps("Email Address doesn't exists!"
                                         " Please sign in with another"
                                         " email address"), 401)
-    item = session.query(Item).filter_by(name=item_name).one()
     form = ItemInfoForm(request.form)
+    item = session.query(Item).filter_by(name=item_name).one()
     if request.method == 'POST' and form.validate():
         item.name = form.name.data
         item.description = form.description.data
-        categories = []
+        # Add categories
         for c in form.categories:
             try:
                 c = session.query(Category).filter_by(name=c.data).one()
             except NoResultFound:
                 c = Category(name=c.data)
                 session.add(c)
-            categories.append(c)
             c.items.append(item)
-        uwi = user_with_item()
-        uwi.item = item
-        uwi.user = user
+
+        try:
+            uwi = session.query(user_with_item).filter_by(uid=user.id,
+                                                          iid=item.id).one()
+        except NoResultFound:
+            uwi = user_with_item()
+            uwi.item = item
+            uwi.user = user
+
+        # Add references
+        for r in form.references:
+            try:
+                r = session.query(Reference).\
+                    filter_by(iid=item.id).\
+                    filter(or_(Reference.rtext == r.form.Text.data,
+                               Reference.rlink == r.form.Link.data)).one()
+            except NoResultFound:
+                r = Reference(rtext=r.form.Text.data,
+                              rlink=r.form.Link.data)
+                item.refers.append(r)
+                r.item = item
+                session.add(r)
+
+        # Add User
         user.items.append(uwi)
+        session.add(uwi)
         session.commit()
-        return redirect('/catalog')
+        print("succeed!")
+        item = session.query(Item).filter_by(name=item.name).one()
+        return redirect(url_for('showItem',
+                                category_name=item.categories[0].name,
+                                item_name=item.name))
     else:
         categories = session.query(Category).all()
-        return render_template("editItem.html",
+        form.description.data = item.description
+        form.categories.pop_entry()
+        for c in item.categories:
+            form.categories.append_entry(c)
+        form.references.pop_entry()
+        for r in item.refers:
+            rform = ReferenceForm()
+            rform.Text = r.rtext
+            rform.Link = r.rlink
+            form.references.append_entry(rform)
+        return render_template("editItem.html", form=form,
                                categories=categories,
                                item=item, user=user)
 
@@ -202,9 +251,21 @@ def deleteItem(item_name):
                                         " email address"), 401)
     item = session.query(Item).filter_by(name=item_name).one()
     if request.method == 'POST':
+        refers = session.query(Reference).filter_by(iid=item.id).all()
+        for refer in refers:
+            session.delete(refer)
+        uwis = session.query(user_with_item).filter_by(iid=item.id).all()
+        for relationship in uwis:
+            session.delete(relationship)
+        categories = session.query(Category).\
+            filter(Category.items.contains(item)).all()
+        for category in categories:
+            category.items.remove(item)
         session.delete(item)
         flash('%s successfully deleted' % item.name)
         session.commit()
+        return redirect(url_for('showCategory',
+                                category_name=categories[0].name))
     else:
         return render_template("deleteItem.html", item=item, user=user)
 
@@ -262,12 +323,15 @@ def showLogin():
 def logout():
     access_token = login_session.get('access_token')
     if access_token:
-        gdisconnect()
+        return gdisconnect()
     else:
-        del login_session['email']
-        del login_session['username']
-        del login_session['photo']
-        flash('Successfully logged out. See you again.')
+        try:
+            del login_session['email']
+            del login_session['username']
+            del login_session['photo']
+            flash('Successfully logged out. See you again.')
+        except Exception:
+            pass
         return redirect('/catalog')
 
 
@@ -352,6 +416,10 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
+        try:
+            login_session.clear()
+        except Exception:
+            pass
         response = make_response(json.dumps("Failed to revoke token "
                                             "for given user!"), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -369,7 +437,7 @@ def getUser(email):
 def createUser(login_session):
     newUser = User(email=login_session['email'],
                    username=login_session['username'],
-                   photo=login_session['picture'])
+                   photo=login_session['photo'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
@@ -380,5 +448,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    # app.run("0.0.0.0", 5000)
     flaskrun(app)
