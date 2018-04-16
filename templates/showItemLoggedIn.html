@@ -5,7 +5,10 @@
   <div class="row mb-2">
     <div class="col-12 border-bottom">
       <h2 >{{item.name}}</h2>
-      <h6>Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}</h6>
+      <h6>
+	Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}
+	by {{item.serialize['lastEditedBy']}}
+      </h6>
     </div>
   </div>
   {% if item.imageURI %}
@@ -17,7 +20,7 @@
 	  [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
 	</small>
       </h5>
-      {% for p in item.description.split('\n\n') %}
+      {% for p in item.description.split('\n') %}
       <p>{{p}}</p>
       {% endfor %}
     </div>
@@ -51,7 +54,7 @@
 	{% for r in item.refers %}
 	<li>
 	  <a class="references" href="{{r.rlink}}">
-	    {{r.rlink.split('/')[-1].replace('_', ' ')}}
+	    {{r.rtext}}
 	  </a>
 	  <i class="fas fa-external-link-alt fa-xs"></i>
 	</li>

@@ -57,7 +57,7 @@
 	      </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="#">CONTACT</a>
+              <a class="nav-link btn disabled" href="#">CONTACT</a>
             </li>
           </ul>
           {% if not user %}
@@ -84,15 +84,15 @@
               </div>
               <div class="col-1 pl-1">
                 <button class="btn btn-outline-success my-sm-0"
-                        type="submit">Search</button>
+                        type="submit" disabled>Search</button>
               </div>
             </div>
           </form>
           <form class="form-inline my-2 my-lg-0 mx-lg-2 d-none d-lg-block">
             <input class="form-control mr-sm-2" type="search"
-                   placeholder="Search" aria-label="Search">
+                   placeholder="Search" aria-label="Search" disabled>
             <button class="btn btn-outline-success my-2 my-sm-0"
-                    type="submit">Search</button>
+                    type="submit" disabled>Search</button>
           </form>
           {% if not user %}
           <button class="btn btn-outline-primary my-2 my-lg-0 d-none d-lg-block"
@@ -134,10 +134,10 @@
         </div>
         <div class="row border-top border-bottom my-2 justify-content-center">
           <div class="col-6 col-lg-2 text-center navigation">
-            <a class="nav-link" href="{{ url_for('main') }}">HOME <span class="sr-only">(current)</span></a>
+            <a class="btn" href="{{ url_for('main') }}">HOME <span class="sr-only">(current)</span></a>
           </div>
           <div class="col-6 col-lg-2 text-center navigation">
-            <a class="nav-link disabled" href="#">DEV GUIDE</a>
+            <a class="btn disabled" href="#">DEV GUIDE</a>
           </div>
         </div>
         <div class="row mt-2">
