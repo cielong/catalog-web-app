@@ -6,10 +6,11 @@ from flask import (
     Flask, render_template, json, Response, request, redirect,
     url_for
 )
-from flaskrun import flaskrun
+from flask_httpauth import HTTPBasicAuth
+from flaskrun import flaskrun  # Do not setting port number inside the script
 
 # Form formats
-from forms import ItemInfoForm, ReferenceForm
+from forms import ItemInfoForm, ReferenceForm, RegistrationForm
 
 # datebase connection
 from sqlalchemy import create_engine, or_
@@ -32,11 +33,12 @@ from flask import make_response, flash
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-with open('client_secrets.json', 'r') as f:
-    CLIENT_ID = json.load(f)['web']['client_id']
+# with open('google_client_secrets.json', 'r') as f:
+#     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
 
 # Flask app
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 # Connect to database
 engine = create_engine(DB_CONN_URI, echo=False)
@@ -45,6 +47,16 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# Verify Password
+@auth.verify_password
+def verify_password(email, password):
+    user = session.query(User).filter_by(email=email).one()
+    if not user or not user.validate_password():
+        return False
+    return True
+
+
+# Page routes
 @app.route("/")
 @app.route("/catalog/")
 def main():
@@ -60,6 +72,7 @@ def main():
 
 
 @app.route("/catalog.json")
+@auth.login_required
 def catalogJson():
     catalog = [c.serialize for c in session.query(Category).all()]
     return Response(response=json.dumps({'catalog': catalog}, indent=2,
@@ -69,6 +82,7 @@ def catalogJson():
 
 
 @app.route("/catalog/<category_name>.json")
+@auth.login_required
 def categoryJson(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
     return Response(response=json.dumps(category.serialize, indent=2,
@@ -78,6 +92,7 @@ def categoryJson(category_name):
 
 
 @app.route("/catalog/<category_name>/<item_name>.json")
+@auth.login_required
 def itemJson(category_name, item_name):
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item)
@@ -270,30 +285,24 @@ def deleteItem(item_name):
         return render_template("deleteItem.html", item=item, user=user)
 
 
-@app.route("/signup", methods=['POST', 'GET'])
+@app.route("/signup", methods=['GET', 'POST'])
 def showSignup():
-    if request.method == 'POST':
-        email = request.form['email']
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        email = form.email.data
         user = getUser(email)
         if user:
             return make_response(json.dumps("Email Address has been"
                                             " registered. Please SignIn"), 401)
-        username = request.form['username']
-        password = request.form['password']
-        if not all([any(c.islower() for c in password),
-                    any(c.isdigit() for c in password),
-                    any(c.isupper() for c in password),
-                    len(password) >= 8]):
-            return make_response(json.dumps("Password should have at least 8"
-                                            " charater and contain at least"
-                                            " 1 uppercase, 1 lowercase and 1"
-                                            " digit"), 401)
+        username = form.username.data
+        password = form.password.data
         newUser = User(email=email, username=username)
         newUser.hash_password(password)
         session.add(newUser)
         session.commit()
+        return redirect('/login')
     else:
-        return render_template("signup.html")
+        return render_template("signup.html", form=form)
 
 
 @app.route("/login", methods=['POST', 'GET'])
@@ -343,7 +352,8 @@ def gconnect():
         return response
     code = request.data
     try:
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('google_client_secrets.json',
+                                             scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -366,7 +376,7 @@ def gconnect():
                                             " given User ID"), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    if result['issued_to'] != CLIENT_ID:
+    if result['issued_to'] != GOOGLE_CLIENT_ID:
         response = make_response(json.dumps("Token's client ID does"
                                             " note match apps"), 401)
     stored_access_token = login_session.get('access_token')
@@ -445,7 +455,10 @@ def createUser(login_session):
 
 
 if __name__ == "__main__":
-    app.secret_key = 'super secret key'
-    app.config['SESSION_TYPE'] = 'filesystem'
-    app.debug = True
-    flaskrun(app)
+    try:
+        app.secret_key = 'super secret key'
+        app.config['SESSION_TYPE'] = 'filesystem'
+        app.debug = True
+        flaskrun(app)
+    except KeyboardInterrupt:
+        login_session.clear()

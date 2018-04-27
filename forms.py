@@ -1,8 +1,8 @@
 import os
 from flask import session
 from wtforms import (
-    Form, BooleanField, StringField, PasswordField, validators,
-    TextAreaField, FieldList, FormField
+    Form, StringField, PasswordField, validators,
+    TextAreaField, FieldList, FormField, ValidationError
 )
 
 
@@ -19,11 +19,19 @@ class RegistrationForm(Form):
     email = StringField('Email Address', [validators.DataRequired(),
                                           validators.Email()])
     password = PasswordField('New Password', [
+        validators.Length(min=8, max=25),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
+
+    def validate_password(form, field):
+        password = field.data
+        if not all([any(c.islower() for c in password),
+                    any(c.isdigit() for c in password),
+                    any(c.isupper() for c in password)]):
+            raise ValidationError('Password should have at least 1 '
+                                  'uppercase, 1 lowercase and 1 digit')
 
 
 class ReferenceForm(Form):
