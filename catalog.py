@@ -35,6 +35,7 @@ from oauth2client.client import FlowExchangeError
 
 # with open('google_client_secrets.json', 'r') as f:
 #     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
+GOOGLE_CLIENT_ID = ''
 
 # Flask app
 app = Flask(__name__)
@@ -319,7 +320,8 @@ def showLogin():
                      for _ in range(32)])
     login_session['state'] = state
     if request.method == 'GET':
-        return render_template("login.html", STATE=state)
+        return render_template("login.html", STATE=state,
+                               googleClientId=GOOGLE_CLIENT_ID)
     else:
         email = request.form['email']
         user = getUser(email)
