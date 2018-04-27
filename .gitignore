@@ -24,5 +24,7 @@ GeoNames.py
 static/sass/.sass-cache/*
 
 # private info
-.env
 *_secrets.json
+
+# enviroment variables
+.env
