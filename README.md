@@ -3,15 +3,25 @@ This Catalog Web Application is intended to provide the users useful description
 
 If you are also interested in these topics I provided, don't hesitate to check the demo version on heroku [Catalog Web App](http://catalog-web-app.herokuapp.com). However, all the data are copied directly from its according wikipedia page, thus nothing new there.  
 
+## API Usage Description
+### JSON End Points (API)
+There are three json endpoints api could be used in this web app, namely request information for the whole catalog, a specific category and a specific item.   
+
+| JSON EndPoints | Description |
+| -------------- | ----------- |
+|/catalog.json|To retrieve all the items' information in the catalog|
+|/catalog/\<category-name\>.json|To retrieve all the items' information for category with name \<category-name\>|
+|/catalog/\<category-name\>/\<item-name\>.json|To retrieve all the items' information for item with name \<item-name\> and  category name \<category-name\>|
+
+
 ## Implementation Intro
 The web app is implemented in python3 using Flask, SQLAlchemy and WTForms.  
 The web app also provides user authentication and authorization, through local permission system and Google Sign In using OAuth2.  
 
-**NOTICE!**  
-Google Sign In has not been set up in the demo version on heroku.  
-Meanwhile, it won't work locally unless a client_secrets.json file has been provided under the directory catalog, see below [Enable OAuth2/Google SignIn](#enable-oauth2google-signin-opional).  
+**NOTICE!**   
+The Google SignIn won't work locally unless a .env file has been correctly setup under the directory catalog, see below [Enable OAuth2/Google SignIn](#enable-oauth2google-signin-opional).  
 
-## Getting started
+## Setting up server on local system
 ### Prerequisites
 The web app is written in python3, however, however, it should work with python2 (If you have set up the virtual enviroment, this won't be your worry). All the required package has been provided in the *Pipfile*, and see [Set up virtual environment](#set-up-virtual-environment) for how to use it. 
 
@@ -38,7 +48,7 @@ Then, to start the virtual environment, use
 And later exit it use, 
 > exit
 
-### Set up database and some fake items
+### Set up database and add some fake items
 You'll have to first set up the database before running the server.  
 The file *database_setup.py* contains a simple model to represent data (Item, Category, References, User and there relationships). 
 > python database_setup.py
@@ -47,15 +57,15 @@ The file *fakeItems.py* provides some initial data and also a default user has b
 > python fakeitems.py
 
 ### Enable OAuth2/Google SignIn (Opional)
-You'll have to provide a *client_secrets.json* file in order to make the Google Signin works. To do this, you'll have to set up your own web app in [Google API Console](https://console.cloud.google.com/apis/dashboard), and download the client_secrets.json file. Form more information, check the the above link to understand how to register a web app.
+You'll have to add more info in the *.env* file in order to make the Google Signin works. To do this, you'll have to set up your own web app in [Google API Console](https://console.cloud.google.com/apis/dashboard), for more information, check the the above link to understand how to register a web app.  
 
-After get the client_secrets.json file and put it under the catalog directory, you should open the *catalog.py* file and uncomment the following line  
-```python
-# with open('google_client_secrets.json', 'r') as f:
-#     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
+After registered, add the following line in the *.env* file
+```shell
+G_CLIENT_ID="YOUR GOOGLE CLIENT ID FOR YOUR WEB APP"
+G_CLIENT_SECRET="YOUR GOOGLE CLIENT SECRET FOR YOUR WEB APP"
 ```
 
-### Run the server in localhost
+### Run the web app locally
 After run the above, you will be able to run the server in command line, the following command provide and example.
 > python catalog.py --host 0.0.0.0 --port 5000
 
