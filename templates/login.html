@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>login</title>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{url_for('static', filename='sass/signin.css' )}}" rel="stylesheet"/>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Patua+One|Berkshire+Swash|Rock+Salt|East+Sea+Dokdo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Patua+One|Berkshire+Swash|Rock+Salt|East+Sea+Dokdo|Roboto" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
@@ -27,9 +27,9 @@
                    placeholder="Email Address" required autofocus />
             <label for="inputPassword" class="sr-only">Password</label>
             <input type="password" id="inputPassword" class="form-control"
-		   name="password" placeholder="Password" required />
+                   name="password" placeholder="Password" required />
             <button class="btn btn-lg btn-primary btn-block mb-2" id="SigninButtion"
-		    type="submit">
+                    type="submit">
               Sign in
             </button>
             <div class="row no-gutters">
@@ -40,12 +40,16 @@
                 </button>
               </div>
               <div class="col pl-1">
-                <button class="btn btn-danger btn-block">Forget Password?</button>
+                <button class="btn btn-danger btn-block disabled">Forget Password?</button>
               </div>
             </div>
           </form>
         </div>
-        <div class="col-12 col-md-4 col-lg-2 my-lg-5 py-5 signin-col rounded-right">
+        <div class="col-12 col-md-4 col-lg-2 my-lg-5 py-5
+                    signin-col rounded-right">
+	  <p class="py-2">
+	    You could also sign in with the following social media account:
+	  </p>
           <div id="GoogleSigninButton">
             <span class="g-signin"
                   data-scope="openid email"
@@ -57,7 +61,6 @@
                   data-approvalprompt="force">
             </span>
           </div>
-          <div id="FacebookSigninButtion"></div>
           <div id="WechatSigninButtion"></div>
           <div id="QQSigninButtion"></div>
         </div>

@@ -6,6 +6,12 @@
     <div class="col-12">
       <h1>New Item</h1>
       <form method="post">
+	{{ form.csrf_token }}
+	{% if form.csrf_token.errors %}
+	<div class="alert alert-danger" role="alert">
+	  You have submitted an invalid CSRF token
+	</div>
+	{% endif %}
         <div class="form-group">
           {{ form.name.label }}
           {{ form.name(class_='form-control', placeholder='name',
