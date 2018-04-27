@@ -33,9 +33,9 @@ from flask import make_response, flash
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
+GOOGLE_CLIENT_ID = ''
 # with open('google_client_secrets.json', 'r') as f:
 #     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
-GOOGLE_CLIENT_ID = ''
 
 # Flask app
 app = Flask(__name__)
