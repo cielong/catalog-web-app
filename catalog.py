@@ -6,7 +6,7 @@ from flask import (
     Flask, render_template, json, Response, request, redirect,
     url_for
 )
-from flask_httpauth import HTTPBasicAuth
+# from flask_httpauth import HTTPBasicAuth
 from flaskrun import flaskrun  # Do not setting port number inside the script
 
 # Form formats
@@ -14,7 +14,7 @@ from forms import ItemInfoForm, ReferenceForm, RegistrationForm
 
 # datebase connection
 from sqlalchemy import create_engine, or_
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import (
     Base, Item, Category, User, Reference,
@@ -38,22 +38,30 @@ from oauth2client.client import FlowExchangeError
 
 # Flask app
 app = Flask(__name__)
-auth = HTTPBasicAuth()
+# auth = HTTPBasicAuth()
 
 # Connect to database
 engine = create_engine(DB_CONN_URI, echo=False)
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
-session = DBSession()
+Session = scoped_session(DBSession)
+session = Session()
 
 
 # Verify Password
-@auth.verify_password
+# @auth.verify_password
 def verify_password(email, password):
     user = session.query(User).filter_by(email=email).one()
     if not user or not user.validate_password():
         return False
     return True
+
+
+@app.teardown_request
+def session_clear(exception=None):
+    Session.remove()
+    if exception and session.is_active:
+        session.rollback()
 
 
 # Page routes
@@ -72,7 +80,7 @@ def main():
 
 
 @app.route("/catalog.json")
-@auth.login_required
+# @auth.login_required
 def catalogJson():
     catalog = [c.serialize for c in session.query(Category).all()]
     return Response(response=json.dumps({'catalog': catalog}, indent=2,
@@ -82,7 +90,7 @@ def catalogJson():
 
 
 @app.route("/catalog/<category_name>.json")
-@auth.login_required
+# @auth.login_required
 def categoryJson(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
     return Response(response=json.dumps(category.serialize, indent=2,
@@ -92,7 +100,7 @@ def categoryJson(category_name):
 
 
 @app.route("/catalog/<category_name>/<item_name>.json")
-@auth.login_required
+# @auth.login_required
 def itemJson(category_name, item_name):
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item)
