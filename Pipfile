@@ -20,6 +20,9 @@ passlib = "*"
 itsdangerous = "*"
 sqlalchemy-utils = "*"
 configparser = "*"
+"oauth2" = "*"
+oauthlib = "*"
+flask-httpauth = "*"
 
 
 [dev-packages]

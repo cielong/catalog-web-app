@@ -25,4 +25,4 @@ static/sass/.sass-cache/*
 
 # private info
 .env
-client_secrets.json
+*_secrets.json
