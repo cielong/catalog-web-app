@@ -60,9 +60,19 @@ class User(Base):
                          back_populates='user')
 
     def hash_password(self, password):
+        """Store hash value of the password
+
+        Args:
+            password: the initial password input by user during registration
+        """
         self.password = pwd_context.encrypt(password)
 
     def validate_password(self, password):
+        """Validate password user has input during login
+
+        Args:
+            password: user input during login session
+        """
         return pwd_context.verify(password, self.password)
 
 

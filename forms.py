@@ -26,6 +26,12 @@ class RegistrationForm(Form):
     confirm = PasswordField('Repeat Password')
 
     def validate_password(form, field):
+        """Validate the format of a password
+
+        Args:
+            form: the current form
+            field: the field in the form
+        """
         password = field.data
         if not all([any(c.islower() for c in password),
                     any(c.isdigit() for c in password),

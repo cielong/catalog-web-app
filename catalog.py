@@ -52,14 +52,17 @@ session = Session()
 # Verify Password
 # @auth.verify_password
 def verify_password(email, password):
+    """Helper function for authentication"""
     user = session.query(User).filter_by(email=email).one()
     if not user or not user.validate_password():
         return False
     return True
 
 
+# App teardown request
 @app.teardown_request
 def session_clear(exception=None):
+    """Clear session"""
     Session.remove()
     if exception and session.is_active:
         session.rollback()
@@ -69,6 +72,7 @@ def session_clear(exception=None):
 @app.route("/")
 @app.route("/catalog/")
 def main():
+    """Main page"""
     categories = session.query(Category).all()
     items = session.query(Item).order_by(Item.lastEditTime.desc())
     items = items.limit(20).all()
@@ -83,6 +87,7 @@ def main():
 @app.route("/catalog.json")
 # @auth.login_required
 def catalogJson():
+    """API get all catalog information in json database"""
     catalog = [c.serialize for c in session.query(Category).all()]
     return Response(response=json.dumps({'catalog': catalog}, indent=2,
                                         ensure_ascii=False,
@@ -93,6 +98,7 @@ def catalogJson():
 @app.route("/catalog/<category_name>.json")
 # @auth.login_required
 def categoryJson(category_name):
+    """API get a category information in json format"""
     category = session.query(Category).filter_by(name=category_name).one()
     return Response(response=json.dumps(category.serialize, indent=2,
                                         ensure_ascii=False,
@@ -103,6 +109,7 @@ def categoryJson(category_name):
 @app.route("/catalog/<category_name>/<item_name>.json")
 # @auth.login_required
 def itemJson(category_name, item_name):
+    """API get an item information in json formats"""
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item)
     item = item.filter(Item.categories.contains(category))
@@ -116,6 +123,13 @@ def itemJson(category_name, item_name):
 @app.route("/catalog/<category_name>/")
 @app.route("/catalog/<category_name>/items")
 def showCategory(category_name):
+    """Retrieve a category and its items in database
+       Assume a category is uniquely defined by its name
+
+    Args:
+        category_name: the name of the category
+    """
+
     categories = session.query(Category).limit(10).all()
     category = session.query(Category).filter_by(name=category_name).one()
     if 'username' in login_session:
@@ -132,6 +146,13 @@ def showCategory(category_name):
 
 @app.route("/catalog/<category_name>/<item_name>")
 def showItem(category_name, item_name):
+    """Retrieve an item in database
+       Assume an item is uniquely defined by its name
+
+    Args:
+        category_name: the name of the category
+        item_name: the name of the item
+    """
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item)
     item = item.filter(Item.categories.contains(category))
@@ -147,6 +168,11 @@ def showItem(category_name, item_name):
 @app.route("/catalog/add", methods=['GET', 'POST'])
 @app.route("/catalog/<category_name>/add", methods=['GET', 'POST'])
 def addItem(category_name=None):
+    """Add new Item
+
+    Args:
+        category_name: the name of the category which direct to this page
+    """
     if 'username' not in login_session:
         return redirect('/login')
     user = getUser(login_session['email'])
@@ -195,6 +221,12 @@ def addItem(category_name=None):
 
 @app.route("/catalog/<item_name>/edit", methods=['GET', 'POST'])
 def editItem(item_name):
+    """Edit/Update Item in their database
+       Assume an item is uniquely defined by its name
+
+    Args:
+        item_name: the name of the item
+    """
     if 'username' not in login_session:
         redirect('/login')
     user = getUser(login_session['email'])
@@ -248,6 +280,7 @@ def editItem(item_name):
                                 category_name=item.categories[0].name,
                                 item_name=item.name))
     else:
+        # Add pre-filled contents (Current data) to their form
         categories = session.query(Category).all()
         form.description.data = item.description
         form.categories.pop_entry()
@@ -266,6 +299,12 @@ def editItem(item_name):
 
 @app.route("/catalog/<item_name>/delete", methods=['GET', 'POST'])
 def deleteItem(item_name):
+    """Delete an item in database.
+       Assume an item is uniquely defined by its name
+
+    Args:
+        item_name: the name of the item, embeded in the uri
+    """
     if 'username' not in login_session:
         redirect('/login')
     user = getUser(login_session['email'])
@@ -273,7 +312,7 @@ def deleteItem(item_name):
         return make_response(json.dumps("Email Address doesn't exists!"
                                         " Please sign in with another"
                                         " email address"), 401)
-    item = session.query(Item).filter_by(name=item_name).one()
+    item = session.query(Item).filter_by(name=item_name).first()
     if request.method == 'POST':
         refers = session.query(Reference).filter_by(iid=item.id).all()
         for refer in refers:
@@ -296,6 +335,7 @@ def deleteItem(item_name):
 
 @app.route("/signup", methods=['GET', 'POST'])
 def showSignup():
+    """ Register page """
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         email = form.email.data
@@ -316,6 +356,7 @@ def showSignup():
 
 @app.route("/login", methods=['POST', 'GET'])
 def showLogin():
+    """ Login page """
     state = ''.join([random.choice(string.ascii_letters+string.digits)
                      for _ in range(32)])
     login_session['state'] = state
@@ -340,10 +381,13 @@ def showLogin():
 
 @app.route('/logout')
 def logout():
+    """Logout page"""
     access_token = login_session.get('access_token')
     if access_token:
+        # If using Google Login
         return gdisconnect()
     else:
+        # If user local user system
         try:
             del login_session['email']
             del login_session['username']
@@ -356,11 +400,14 @@ def logout():
 
 @app.route("/gconnect", methods=['POST'])
 def gconnect():
+    """Connect to a google account using OAuth2"""
+    # Check state token random generated in login
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
     code = request.data
+    # OAuth flow (Get Access Token)
     try:
         oauth_flow = flow_from_clientsecrets('google_client_secrets.json',
                                              scope='')
@@ -371,6 +418,8 @@ def gconnect():
                                             'authorization code'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+    # Check token
     access_token = credentials.access_token
     url = ("https://www.googleapis.com/oauth2/v1/"
            "tokeninfo?access_token=%s" % access_token)
@@ -396,6 +445,8 @@ def gconnect():
                                             ' connected'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+    # Get User Info
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -407,15 +458,21 @@ def gconnect():
     login_session['photo'] = data['picture']
     login_session['email'] = data['email']
 
+    # Login User
     user = getUser(login_session['email'])
     if not user:
         user = createUser(login_session)
+    if user.photo is None:
+        user.photo = login_session['photo']
+        session.add(user)
+        session.commit()
     flash("you are now logged in as %s" % user.username)
     print("done!")
     return render_template('welcome.html', user=user)
 
 
 def gdisconnect():
+    """Disconnect google login accounts"""
     access_token = login_session.get('access_token')
     if access_token is None:
         response = make_response(json.dumps('Current user note connected!'),
@@ -447,6 +504,7 @@ def gdisconnect():
 
 
 def getUser(email):
+    """Get user from local database using unique email address"""
     try:
         user = session.query(User).filter_by(email=email).one()
         return user
@@ -455,6 +513,7 @@ def getUser(email):
 
 
 def createUser(login_session):
+    """Create a user using information in login session"""
     newUser = User(email=login_session['email'],
                    username=login_session['username'],
                    photo=login_session['photo'])
@@ -468,7 +527,6 @@ if __name__ == "__main__":
     try:
         app.secret_key = 'super secret key'
         app.config['SESSION_TYPE'] = 'filesystem'
-        app.debug = True
         flaskrun(app)
     except KeyboardInterrupt:
         login_session.clear()
