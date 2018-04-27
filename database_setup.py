@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os  # For heroku deploy
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -23,6 +23,7 @@ DB_CONFIG_DICT = {
 # DB_CONN_FORMAT = "postgresql://{user}:{password}@{host}:{port}/{database}"
 # DB_CONN_FORMAT = "postgresql:///{database}"
 # DB_CONN_URI = DB_CONN_FORMAT.format(**DB_CONFIG_DICT)
+# To deploy on heroku, use the environment variable
 DB_CONN_URI = os.environ['DATABASE_URL']
 
 Base = declarative_base()
