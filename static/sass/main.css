@@ -42,7 +42,7 @@ main {
   padding-top: 1em; }
   main h2 {
     font-family: "Patua One";
-    background-image: url("../images/text_background.jpg");
+    background-image: url("../backgroundImage/text_background.jpg");
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent; }

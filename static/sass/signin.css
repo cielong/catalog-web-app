@@ -14,6 +14,13 @@ a, a:hover {
   pointer: cursor !important;
   text-decoration: none !important; }
 
+.dropdown-toggle::after {
+  display: none !important; }
+
+.dropdown-menu-right {
+  right: 0 !important;
+  left: auto !important; }
+
 .brand {
   font-family: 'Rock Salt', cursive; }
 
@@ -49,5 +56,7 @@ a, a:hover {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0; }
+  .form-signin .hint {
+    display: none; }
 
 /*# sourceMappingURL=signin.css.map */
