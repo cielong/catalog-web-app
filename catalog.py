@@ -6,8 +6,9 @@ from flask import (
     Flask, render_template, json, Response, request, redirect,
     url_for
 )
-# from flask_httpauth import HTTPBasicAuth
-from flaskrun import flaskrun  # Do not setting port number inside the script
+
+# read command line arguments for setting flask app
+from _flaskHelper import flaskrun
 
 # Form formats
 from forms import ItemInfoForm, ReferenceForm, RegistrationForm
@@ -27,19 +28,20 @@ import string
 from flask import session as login_session
 
 # OAuth2
+import os  # To read enviroment variable
 import requests
 import httplib2
 from flask import make_response, flash
-from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import FlowExchangeError
 
-GOOGLE_CLIENT_ID = ''
+# enviroment variable
+env = os.environ
 # with open('google_client_secrets.json', 'r') as f:
 #     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
 
 # Flask app
 app = Flask(__name__)
-# auth = HTTPBasicAuth()
 
 # Connect to database
 engine = create_engine(DB_CONN_URI, echo=False)
@@ -49,17 +51,7 @@ Session = scoped_session(DBSession)
 session = Session()
 
 
-# Verify Password
-# @auth.verify_password
-def verify_password(email, password):
-    """Helper function for authentication"""
-    user = session.query(User).filter_by(email=email).one()
-    if not user or not user.validate_password():
-        return False
-    return True
-
-
-# App teardown request
+# For each request, rollback the transaction if error exists
 @app.teardown_request
 def session_clear(exception=None):
     """Clear session"""
@@ -85,7 +77,6 @@ def main():
 
 
 @app.route("/catalog.json")
-# @auth.login_required
 def catalogJson():
     """API get all catalog information in json database"""
     catalog = [c.serialize for c in session.query(Category).all()]
@@ -96,7 +87,6 @@ def catalogJson():
 
 
 @app.route("/catalog/<category_name>.json")
-# @auth.login_required
 def categoryJson(category_name):
     """API get a category information in json format"""
     category = session.query(Category).filter_by(name=category_name).one()
@@ -107,7 +97,6 @@ def categoryJson(category_name):
 
 
 @app.route("/catalog/<category_name>/<item_name>.json")
-# @auth.login_required
 def itemJson(category_name, item_name):
     """API get an item information in json formats"""
     category = session.query(Category).filter_by(name=category_name).one()
@@ -362,7 +351,7 @@ def showLogin():
     login_session['state'] = state
     if request.method == 'GET':
         return render_template("login.html", STATE=state,
-                               googleClientId=GOOGLE_CLIENT_ID)
+                               googleClientId=env['G_CLIENT_ID'])
     else:
         email = request.form['email']
         user = getUser(email)
@@ -409,9 +398,12 @@ def gconnect():
     code = request.data
     # OAuth flow (Get Access Token)
     try:
-        oauth_flow = flow_from_clientsecrets('google_client_secrets.json',
-                                             scope='')
-        oauth_flow.redirect_uri = 'postmessage'
+        G_CLIENT_ID = env['G_CLIENT_ID']
+        G_CLIENT_SECRET = env['G_CLIENT_SECRET']
+        oauth_flow = OAuth2WebServerFlow(client_id=G_CLIENT_ID,
+                                         client_secret=G_CLIENT_SECRET,
+                                         scope='',
+                                         redirect_uri='postmessage')
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
         response = make_response(json.dumps('Failed to upgrade their'
@@ -435,7 +427,7 @@ def gconnect():
                                             " given User ID"), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    if result['issued_to'] != GOOGLE_CLIENT_ID:
+    if result['issued_to'] != G_CLIENT_ID:
         response = make_response(json.dumps("Token's client ID does"
                                             " note match apps"), 401)
     stored_access_token = login_session.get('access_token')
@@ -467,8 +459,7 @@ def gconnect():
         session.add(user)
         session.commit()
     flash("you are now logged in as %s" % user.username)
-    print("done!")
-    return render_template('welcome.html', user=user)
+    return "Welcome %s" % user.username
 
 
 def gdisconnect():
@@ -488,10 +479,8 @@ def gdisconnect():
         del login_session['username']
         del login_session['email']
         del login_session['photo']
-        response = make_response(json.dumps("User successfully disconnected!"),
-                                 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash("Successfully log out!")
+        return redirect("/catalog")
     else:
         try:
             login_session.clear()

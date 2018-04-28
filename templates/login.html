@@ -15,7 +15,7 @@
     <script src="//apis.google.com/js/platform.js?onload=start"> </script>
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="signinButtons">
       <div class="row justify-content-center">
         <div class="col-12 col-md-6 col-lg-4 signin-col-first
                     my-lg-5 signin-col rounded-left">
@@ -28,7 +28,7 @@
             <label for="inputPassword" class="sr-only">Password</label>
             <input type="password" id="inputPassword" class="form-control"
                    name="password" placeholder="Password" required />
-            <button class="btn btn-lg btn-primary btn-block mb-2" id="SigninButtion"
+            <button class="btn btn-lg btn-primary btn-block mb-2" id="SigninButton"
                     type="submit">
               Sign in
             </button>
@@ -40,7 +40,9 @@
                 </button>
               </div>
               <div class="col pl-1">
-                <button class="btn btn-danger btn-block disabled">Forget Password?</button>
+                <button class="btn btn-danger btn-block disabled">
+		  Forget Password?
+		</button>
               </div>
             </div>
           </form>
@@ -53,24 +55,28 @@
           <div id="GoogleSigninButton">
             <span class="g-signin"
                   data-scope="openid email"
-                  data-clientid={{ googleClientId }}
+                  data-clientid={{googleClientId}}
                   data-redirecturi="postmessage"
                   data-accesstype="offline"
-                  data-cookiepolicy="singel-host-origin"
+                  data-cookiepolicy="single_host_origin"
                   data-callback="signInCallback"
                   data-approvalprompt="force">
             </span>
           </div>
-          <div id="WechatSigninButtion"></div>
-          <div id="QQSigninButtion"></div>
         </div>
       </div>
-      <div id="result"></div>
+    </div>
+    <div class="container">
+      <div class="row">
+	<div class="col-12">
+	  <div id="result" class="text-center"></div>
+	</div>
+      </div>
     </div>
     <script>
      function signInCallback(authResult) {
        if (authResult['code']) {
-         $('#GoogleSigninButton').attr('style', 'display: none');
+         $('#signinButtons').attr('style', 'display: none');
          $.ajax({
            type: 'POST',
            url: '/gconnect?state={{STATE}}',
