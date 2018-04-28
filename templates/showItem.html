@@ -5,7 +5,15 @@
   <div class="row mb-2">
     <div class="col-12 border-bottom">
       <h2 >{{item.name}}</h2>
-      <h6>Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}</h6>
+      <p class="my-0">
+	Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}
+      </p>
+      {% for c in item.categories %}
+      <a href="{{ url_for('showCategory', category_name=c.name) }}"
+	 class="badge badge-dark badge-pill">
+	#{{c.name}}
+      </a>
+      {% endfor %}
     </div>
   </div>
   {% if item.imageURI %}
