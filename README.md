@@ -23,7 +23,7 @@ The Google SignIn won't work locally unless a .env file has been correctly setup
 
 ## Setting up server on local system
 ### Prerequisites
-The web app is written in python3, however, however, it should work with python2 (If you have set up the virtual enviroment, this won't be your worry). All the required package has been provided in the *Pipfile*, and see [Set up virtual environment](#set-up-virtual-environment) for how to use it. 
+The web app is written in python3, however, it should work with python2 (If you have set up the virtual enviroment, this won't be your worry). All the required package has been provided in the *Pipfile*, and see [Set up virtual environment](#set-up-virtual-environment) for how to use it. 
 
 ### Download/Clone this repo to your local computer
 > git clone git@github.com:cielong/catalog-web-app.git
@@ -31,6 +31,7 @@ The web app is written in python3, however, however, it should work with python2
 And then, change directory to the cloned repo.
 
 ### Set up virtual environment
+#### Install required python libraries
 To run the server code, it is recommended to use a virtual enviroment, and a *Pipfile* (for more infomation, check [pipenv](https://docs.pipenv.org)) has been provided.  
 In order to use the Pipfile to set up the vitual environment, you have to first install pipenv  
 > pip install pipenv
@@ -39,13 +40,18 @@ After successfully installed, run the following command to set up Virtual Enviro
 
 > pipenv install
 
-**IMPORTANT**  
-In order to conform to Heroku deployment, the codes utilize some environment variables (DATABASE_URL, PORT etc.), and you can set these in virtual environment by providing a *.env* file under the catalog directory. An example file *.env-example* has been provided, and you'll have to refer to it to set up your own enviroment variables.  
+#### Set up .env file (IMPORTANT!!)
+In order to conform to Heroku deployment, the codes utilize some environment variables (DATABASE_URL, PORT etc.).  
 
+You can set these variables in virtual environment by providing a **.env** file under the catalog directory, and the virtual environment will automatically take use of it when it starts (see [next section](#start-virtual-environment)). 
+
+Because of private information in such file, only an example file **.env-example** has been provided, and you'll have to refer to it to write your own **.env** file in order to set up these required enviroment variables.  
+
+#### Start virtual environment
 Then, to start the virtual environment, use
 > pipenv shell
 
-And later exit it use, 
+And later to exit the virtual environment, use, 
 > exit
 
 ### Set up database and add some fake items
@@ -66,7 +72,7 @@ G_CLIENT_SECRET="YOUR GOOGLE CLIENT SECRET FOR YOUR WEB APP"
 ```
 
 ### Run the web app locally
-After run the above, you will be able to run the server in command line, the following command provide and example.
+After run the above, you will be able to run the server in command line, the following command provides an example command
 > python catalog.py --host 0.0.0.0 --port 5000
 
 ## TODO
