@@ -5,20 +5,26 @@
   <div class="row mb-2">
     <div class="col-12 border-bottom">
       <h2 >{{item.name}}</h2>
-      <h6>
-	Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}
-	by {{item.serialize['lastEditedBy']}}
-      </h6>
+      <p class="my-0">
+        Last edited at {{item.lastEditTime.strftime("%Y-%m-%d %H:%M")}}
+        by {{item.serialize['lastEditedBy']}}
+      </p>
+      {% for c in item.categories %}
+      <a href="{{ url_for('showCategory', category_name=c.name) }}"
+         class="badge badge-dark badge-pill">
+        #{{c.name}}
+      </a>
+      {% endfor %}
     </div>
   </div>
   {% if item.imageURI %}
   <div class="row mt-2">
     <div class="col-sm-8">
       <h5>
-	Description:
-	<small>
-	  [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
-	</small>
+        Description:
+        <small>
+          [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
+        </small>
       </h5>
       {% for p in item.description.split('\n') %}
       <p>{{p}}</p>
@@ -37,10 +43,10 @@
   <div class="row">
     <div class="col-12">
       <h5>
-	Description:
-	<small>
-	  [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
-	</small>
+        Description:
+        <small>
+          [<a href="{{ url_for('editItem', item_name=item.name) }}">edit</a> | <a href="{{ url_for('deleteItem', item_name=item.name) }}">delete</a>]
+        </small>
       </h5>
       <p>{{item.description}}</p>
     </div>
@@ -51,14 +57,14 @@
     <div class="col-12">
       <h5>References</h5>
       <ol>
-	{% for r in item.refers %}
-	<li>
-	  <a class="references" href="{{r.rlink}}">
-	    {{r.rtext}}
-	  </a>
-	  <i class="fas fa-external-link-alt fa-xs"></i>
-	</li>
-	{% endfor %}
+        {% for r in item.refers %}
+        <li>
+          <a class="references" href="{{r.rlink}}">
+            {{r.rtext}}
+          </a>
+          <i class="fas fa-external-link-alt fa-xs"></i>
+        </li>
+        {% endfor %}
       </ol>
     </div>
   </div>
