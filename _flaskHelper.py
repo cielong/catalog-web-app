@@ -27,8 +27,17 @@ def flaskrun(app, default_host="127.0.0.1",
     parser.add_option("-p", "--profile",
                       action="store_true", dest="profile",
                       help=optparse.SUPPRESS_HELP)
+    parser.add_option("-l", "--local",
+                      action="store_true",
+                      help="Set ssl for localhost development")
 
     options, _ = parser.parse_args()
+
+    kwargs = {
+        'debug': options.debug,
+        'host': options.host,
+        'port': int(options.port),
+    }
 
     # If the user selects the profiling option, then we need
     # to do a little extra setup
@@ -40,8 +49,7 @@ def flaskrun(app, default_host="127.0.0.1",
                                           restrictions=[30])
         options.debug = True
 
-    app.run(
-        debug=options.debug,
-        host=options.host,
-        port=int(options.port)
-    )
+    if options.local:
+        kwargs['ssl_context'] = ('./.cert/server.crt', './.cert/server.key')
+
+    app.run(**kwargs)
