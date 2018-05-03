@@ -36,9 +36,8 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import FlowExchangeError
 
 # enviroment variable
-env = os.environ
-# with open('google_client_secrets.json', 'r') as f:
-#     GOOGLE_CLIENT_ID = json.load(f)['web']['client_id']
+G_CLIENT_ID = os.environ['G_CLIENT_ID']
+G_CLIENT_SECRET = os.environ['G_CLIENT_SECRET']
 
 # Flask app
 app = Flask(__name__)
@@ -351,7 +350,7 @@ def showLogin():
     login_session['state'] = state
     if request.method == 'GET':
         return render_template("login.html", STATE=state,
-                               googleClientId=env['G_CLIENT_ID'])
+                               googleClientId=G_CLIENT_ID)
     else:
         email = request.form['email']
         user = getUser(email)
@@ -398,8 +397,6 @@ def gconnect():
     code = request.data
     # OAuth flow (Get Access Token)
     try:
-        G_CLIENT_ID = env['G_CLIENT_ID']
-        G_CLIENT_SECRET = env['G_CLIENT_SECRET']
         oauth_flow = OAuth2WebServerFlow(client_id=G_CLIENT_ID,
                                          client_secret=G_CLIENT_SECRET,
                                          scope='',
