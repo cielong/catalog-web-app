@@ -7,6 +7,8 @@ from flask import (
     url_for
 )
 
+from flask_sslify import SSLify
+
 # read command line arguments for setting flask app
 from _flaskHelper import flaskrun
 
@@ -28,7 +30,6 @@ import string
 from flask import session as login_session
 
 # OAuth2
-import os  # To read enviroment variable
 import requests
 import httplib2
 from flask import make_response, flash
@@ -36,11 +37,13 @@ from oauth2client.client import OAuth2WebServerFlow
 from oauth2client.client import FlowExchangeError
 
 # enviroment variable
+import os
 G_CLIENT_ID = os.environ['G_CLIENT_ID']
 G_CLIENT_SECRET = os.environ['G_CLIENT_SECRET']
 
 # Flask app
 app = Flask(__name__)
+sslify = SSLify(app)
 
 # Connect to database
 engine = create_engine(DB_CONN_URI, echo=False)
