@@ -514,7 +514,7 @@ def createUser(login_session):
 
 if __name__ == "__main__":
     try:
-        app.secret_key = 'super secret key'
+        app.secret_key = os.urandom(16)
         app.config['SESSION_TYPE'] = 'filesystem'
         flaskrun(app)
     except KeyboardInterrupt:
