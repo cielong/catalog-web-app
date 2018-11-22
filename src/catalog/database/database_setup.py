@@ -142,8 +142,9 @@ class Reference(Base):
         }
 
 
-if __name__ == "__main__":
-    engine = create_engine(DB_CONN_URI, echo=False)
+def setup():
+    print("DB_CONN_URI: " + DB_CONN_URI)
+    engine = create_engine(DB_CONN_URI, echo=True)
     if not database_exists(engine.url):
         create_database(engine.url)
     Base.metadata.create_all(engine)

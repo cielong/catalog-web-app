@@ -1,0 +1,15 @@
+uwsgi:
+  master: true
+  processes: 2
+  socket: :3031
+  plugins: python3
+  protocol: uwsgi
+  wsgi-file: index.py
+  pythonpath: .
+  pythonpath: .venc/lib/python3.6/site-packages
+  virtualenv: .venv
+
+
+  die-on-term: true
+
+  

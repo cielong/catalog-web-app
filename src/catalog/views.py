@@ -1,25 +1,23 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""Catalog Project server"""
+"""Catalog View"""
+# Flask app
+from src.catalog import app
+
 from flask import (
-    Flask, render_template, json, Response, request, redirect,
+    render_template, json, Response, request, redirect,
     url_for
 )
 
-from flask_sslify import SSLify
-
-# read command line arguments for setting flask app
-from _flaskHelper import flaskrun
-
 # Form formats
-from forms import ItemInfoForm, ReferenceForm, RegistrationForm
+from src.catalog.forms import ItemInfoForm, ReferenceForm, RegistrationForm
 
 # datebase connection
 from sqlalchemy import create_engine, or_
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.orm.exc import NoResultFound
-from database_setup import (
+from src.catalog.database.database_setup import (
     Base, Item, Category, User, Reference,
     user_with_item, DB_CONN_URI
 )
@@ -41,9 +39,6 @@ import os
 G_CLIENT_ID = os.environ['G_CLIENT_ID']
 G_CLIENT_SECRET = os.environ['G_CLIENT_SECRET']
 
-# Flask app
-app = Flask(__name__)
-sslify = SSLify(app)
 
 # Connect to database
 engine = create_engine(DB_CONN_URI, echo=False)
@@ -510,12 +505,3 @@ def createUser(login_session):
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
     return user
-
-
-if __name__ == "__main__":
-    try:
-        app.secret_key = os.urandom(16)
-        app.config['SESSION_TYPE'] = 'filesystem'
-        flaskrun(app)
-    except KeyboardInterrupt:
-        login_session.clear()

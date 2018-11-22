@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  catalog:
+    build:
+      context: .
+      args:
+        DB_URL: ${DATABASE_URL}
+        PIPENV_CONFIG: ${PIPENV_VENV_IN_PROJECT}
+    image: catalog:latest
+    volumes:
+      - ./uwsgi.yaml:/catalog/uwsgi.yaml
+    entrypoint: ["/wait-for-it/wait-for-it.sh", "database:5432", "--", "pipenv", "run", "uwsgi", "--yaml", "uwsgi.yaml"]      
+    depends_on:
+      - database
+      - migration
+    environment:
+      G_CLIENT_ID: ${G_CLIENT_ID}
+      G_CLIENT_SECRET: ${G_CLIENT_SECRET}
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    # entrypoint: ["/wait-for-it/wait-for-it.sh", "catalog:3031", "--", "nginx", "-g", "daemon off;"]
+    depends_on:
+      - catalog
+    ports:
+      - "8080:80"
+
+  migration:
+    image: catalog:latest
+    command: ["/wait-for-it/wait-for-it.sh", "database:5432", "--", "pipenv", "run", "python", "setup.py"]
+    depends_on:
+      - database
+
+    

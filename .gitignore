@@ -29,5 +29,8 @@ static/sass/.sass-cache/*
 # enviroment variables
 .env
 
+# virtual enviornment
+.venv/
+
 # certification file
 .cert/
